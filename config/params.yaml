@@ -1,0 +1,21 @@
+  ros__parameters:
+    rgbcam/x : 2.0
+    rgbcam/y : 0.0
+    rgbcam/z : 3.5
+    rgbcam/pitch : -15.0 
+    rgbcam/yaw : 0.0
+    rgbcam/roll : 0.0
+    rgbcam/sensor_tick : "0.033333f"
+    
+
+    radar/x : 2.3
+    radar/y : 0.0
+    radar/z : 1.9
+    radar/pitch : 0.0 
+    radar/yaw : 0.0
+    radar/roll : 0.0
+    radar/sensor_tick : "0.1f"
+    radar/horizontal_fov : "30.0f"
+    radar/vertical_fov : "30.0f"
+    radar/points_per_second : "1500"
+    radar/range : "100.0f"
