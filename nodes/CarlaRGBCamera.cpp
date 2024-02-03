@@ -40,6 +40,9 @@ CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client
 
 
     camera_bp->SetAttribute("sensor_tick", rgbcam_sensor_tick);
+    camera_bp->SetAttribute("image_size_x","640");
+    camera_bp->SetAttribute("image_size_y","480");
+    //camera_bp->SetAttribute("enable_postprocess_effects","false");
     assert(camera_bp != nullptr);
 
     camera_transform = cg::Transform{

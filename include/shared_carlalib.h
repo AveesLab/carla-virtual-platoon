@@ -18,6 +18,7 @@
 #include <carla/sensor/data/Image.h>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
+#include <carla/geom/Vector3D.h>
 namespace cc = carla::client;
 namespace cg = carla::geom;
 namespace csd = carla::sensor::data;

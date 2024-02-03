@@ -134,8 +134,8 @@ void CarlaRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMea
  
       offset += radar_msg.point_step;
     //  std::cerr << "Point " << i << ": ("
-       //       << x << ", " << y << ", " << z << ") "
-        //      << "Distance: " << detection.depth << std::endl;
+         //     << x << ", " << y << ", " << z << ") "
+         //     << "Distance: " << detection.depth << std::endl;
      
     }
     radar_msg.data = data;

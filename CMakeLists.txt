@@ -37,11 +37,23 @@ add_executable(LV_bridge
     src/LV.cpp
     nodes/CarlaRGBCamera.cpp
     nodes/CarlaRadar.cpp
+    nodes/CarlaLidar.cpp
+    nodes/CarlaVehicle.cpp
 )
 add_executable(FV1_bridge
     src/FV1.cpp
     nodes/CarlaRGBCamera.cpp
     nodes/CarlaRadar.cpp
+    nodes/CarlaLidar.cpp
+    nodes/CarlaVehicle.cpp
+)
+
+add_executable(FV2_bridge
+    src/FV2.cpp
+    nodes/CarlaRGBCamera.cpp
+    nodes/CarlaRadar.cpp
+    nodes/CarlaLidar.cpp
+    nodes/CarlaVehicle.cpp
 )
 
 
@@ -76,9 +88,25 @@ target_link_directories(FV1_bridge PUBLIC
 target_link_libraries(FV1_bridge ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
 )
 
+ament_target_dependencies(FV2_bridge ${ament_dependencies} )
+
+target_include_directories(FV2_bridge PUBLIC
+    ${libCarla_INCLUDE_DIR}
+    ${DEP_INCLUDE_DIR}
+)
+target_include_directories(FV2_bridge PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+target_link_directories(FV2_bridge PUBLIC
+    ${libCarla_LIB_DIR}
+)
+
+target_link_libraries(FV2_bridge ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
+)
+
 install(TARGETS
 LV_bridge 
 FV1_bridge
+FV2_bridge
 DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY

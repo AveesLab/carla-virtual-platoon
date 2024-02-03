@@ -63,10 +63,10 @@ int main(int argc, const char *argv[]) {
     // Get a Truck blueprint.
     auto vehicles_fv1 = blueprint_library->Filter("dafxf");
     auto blueprint_fv1 = RandomChoice(*vehicles_fv1, rng);  
-    blueprint_fv1.SetAttribute("role_name", "FV1");
+    blueprint_fv1.SetAttribute("role_name", "FV2");
     auto map = world.GetMap();
     auto transform = RandomChoice(map->GetRecommendedSpawnPoints(), rng);
-    transform.location.x = -300.990f; // 300 , 303(11m)
+    transform.location.x = -330.990f;
     transform.location.y = 30.0f;
     transform.location.z = 2.0f;
     transform.rotation.roll = 0.0f;
