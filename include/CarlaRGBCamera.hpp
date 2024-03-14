@@ -29,7 +29,7 @@ using namespace std::string_literals;
 class CarlaRGBCameraPublisher : public rclcpp::Node {
 
 public:
-    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_);
+    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_, std::string name_);
     ~CarlaRGBCameraPublisher() {
     camera->Destroy();
     }
@@ -52,6 +52,6 @@ private:
     float rgbcam_roll;
     std::string rgbcam_sensor_tick;
     std::string rgbcam_topic_name;
-    
+    std::string role_name_;
     
 };

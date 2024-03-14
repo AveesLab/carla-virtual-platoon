@@ -2,7 +2,7 @@
 
 #include <boost/make_shared.hpp>
 
-CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor,carla::client::World& world_)
+CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor,carla::client::World& world_, std::string name_)
     : Node("carla_radar_publisher", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)),world_(world_) {
@@ -12,26 +12,26 @@ CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Bluepr
 
     this->blueprint_library = blueprint_library;
     this->actor = actor;
-
+    this->role_name_ = name_;
 
     radar_bp = boost::shared_ptr<carla::client::ActorBlueprint>(
         const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.radar"))
 );
 
 
-    this->get_parameter_or("radar/x",radar_x,2.0f);
+    this->get_parameter_or("radar/x",radar_x,2.3f);
     this->get_parameter_or("radar/y",radar_y,0.0f);
-    this->get_parameter_or("radar/z",radar_z,3.5f);
-    this->get_parameter_or("radar/pitch",radar_pitch, -15.0f);
+    this->get_parameter_or("radar/z",radar_z,1.5f);
+    this->get_parameter_or("radar/pitch",radar_pitch, 0.0f);
     this->get_parameter_or("radar/yaw",radar_yaw,0.0f);
     this->get_parameter_or("radar/roll",radar_roll,0.0f);
     this->get_parameter_or("radar/sensor_tick",radar_sensor_tick,std::string("0.1f"));
-    this->get_parameter_or("radar/horizontal_fov",radar_horizontal_fov,std::string("30.0f"));
+    this->get_parameter_or("radar/horizontal_fov",radar_horizontal_fov,std::string("50.0f"));
     this->get_parameter_or("radar/vertical_fov",radar_vertical_fov,std::string("30.0f"));
-    this->get_parameter_or("radar/points_per_second",radar_points_per_second,std::string("1500"));
+    this->get_parameter_or("radar/points_per_second",radar_points_per_second,std::string("80000"));
     this->get_parameter_or("radar/range",radar_range,std::string("100.0f"));
     this->get_parameter_or("radar_topic_name",radar_topic_name,std::string("LV/carla/radar"));
-
+    radar_topic_name  = role_name_ + radar_topic_name;
     radar_bp->SetAttribute("sensor_tick", radar_sensor_tick);
     radar_bp->SetAttribute("horizontal_fov", radar_horizontal_fov);
     radar_bp->SetAttribute("points_per_second", radar_points_per_second);
@@ -59,7 +59,7 @@ void CarlaRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMea
     {
     sensor_msgs::msg::PointCloud2 radar_msg;
     radar_msg.header.stamp = this->now();
-    radar_msg.header.frame_id = "radar_frame";
+    radar_msg.header.frame_id = "laser";
 
     radar_msg.height = 1;
     radar_msg.width = carla_radar_measurement->GetDetectionAmount();
@@ -118,7 +118,9 @@ void CarlaRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMea
       const auto &detection = carla_radar_measurement->at(i);
       float x = detection.depth * std::cos(detection.azimuth) * std::cos(-detection.altitude);
       float y = detection.depth * std::sin(-detection.azimuth) * std::cos(detection.altitude);
+ 
       float z = detection.depth * std::sin(detection.altitude);
+      
       float range = detection.depth;
       float velocity = detection.velocity;
       float azimuth_angle = detection.azimuth;

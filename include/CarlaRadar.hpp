@@ -32,7 +32,7 @@ using namespace std::string_literals;
 class CarlaRadarPublisher : public rclcpp::Node {
 
 public:
-    CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_);
+    CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_,std::string name_);
     ~CarlaRadarPublisher(){
         radar->Destroy();
   }
@@ -60,4 +60,5 @@ private:
     std::string radar_points_per_second;
     std::string radar_range;
     std::string radar_topic_name;
+    std::string role_name_;
 };

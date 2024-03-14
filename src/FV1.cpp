@@ -88,25 +88,18 @@ int main(int argc, const char *argv[]) {
     
     rclcpp::init(argc, argv);
     rclcpp::executors::MultiThreadedExecutor executor;
-    auto node_fv1 = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world);
-  //  auto node_radar_fv1 = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor_fv1,world);
-    auto node_lidar_fv1 = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor_fv1,world);
-    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle_fv1);
+        auto node_fv1 = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world,"/FV1/");
+        auto node_fv1_spec = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world,"/tmptmptmp/");
+    auto node_radar_fv1 = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor_fv1,world,"/FV1/");
+  //  auto node_lidar_fv1 = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor_fv1,world,"FV1");
+    auto node_vehicle_fv1 = std::make_shared<CarlaVehicleController>(vehicle_fv1,"/FV1/");
+        executor.add_node(node_fv1);
+        executor.add_node(node_fv1_spec);
+    executor.add_node(node_radar_fv1);
+  //  executor.add_node(node_lidar_fv1);
+    executor.add_node(node_vehicle_fv1);
 
-    
-    executor.add_node(node_fv1);
-    //executor.add_node(node_radar_fv1);
-    executor.add_node(node_lidar_fv1);
-    executor.add_node(node_vehicle);
 
-    /*
-    std::this_thread::sleep_for(20s);
-    vehicle_fv1->SetAutopilot(true);   
-    std::this_thread::sleep_for(5s);
-    vehicle_fv1->SetAutopilot(false);
-    carla::geom::Vector3D target_velocity(11.11,0 , 0); // X 축을 따라 20 m/s 속도
-    vehicle_fv1->EnableConstantVelocity(target_velocity);
-    */
     executor.spin();
     rclcpp::shutdown(); 
     // Remove actors from the simulation.

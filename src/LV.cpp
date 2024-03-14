@@ -78,18 +78,14 @@ int main(int argc, const char *argv[]) {
     rclcpp::init(argc, argv);
 
     rclcpp::executors::MultiThreadedExecutor executor;
-    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world);
+    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world,"/LV/");
     //auto node_radar = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor,world);
-    auto node_lidar = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor,world);
-    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle);
+    auto node_lidar = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor,world,"/LV/");
+    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle,"/LV/");
     //executor.add_node(node);
     executor.add_node(node_lidar);
     executor.add_node(node_vehicle);
-     // Set autopilot
-   // std::this_thread::sleep_for(10s);
-    //vehicle->SetAutopilot(true);   
-   // carla::geom::Vector3D target_velocity(19.4444,0 , 0); 
-    //vehicle->EnableConstantVelocity(target_velocity);
+
     executor.spin();
 
     rclcpp::shutdown(); 

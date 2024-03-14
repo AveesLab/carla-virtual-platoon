@@ -32,7 +32,7 @@ using namespace std::string_literals;
 class CarlaVehicleController : public rclcpp::Node {
 
 public:
-    CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_);
+    CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_,std::string name_);
 
 private:
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr SteerSubscriber_;
@@ -44,4 +44,5 @@ private:
     boost::shared_ptr<carla::client::Vehicle> Vehicle_;
     carla::rpc::VehicleControl control;
     void VelocityPublisher_callback();
+    std::string role_name_;
 };
