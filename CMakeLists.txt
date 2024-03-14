@@ -19,6 +19,9 @@ find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(Boost REQUIRED)
 find_package(TIFF REQUIRED)
+find_package(OpenCV)
+find_package(cv_bridge REQUIRED)
+
 
 set(ament_dependencies
   rclcpp
@@ -28,6 +31,8 @@ set(ament_dependencies
   cv_bridge
   image_transport
   Boost
+  OpenCV
+  cv_bridge
 )
 
 

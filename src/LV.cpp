@@ -46,12 +46,12 @@ int main(int argc, const char *argv[]) {
     auto map = world.GetMap();
     auto transform = RandomChoice(map->GetRecommendedSpawnPoints(), rng);
     
-    transform.location.x = -270.990f; // 300 , 303(11m)
-    transform.location.y = 30.0f;
+    transform.location.x = 412.47f; // 300 , 303(11m)
+    transform.location.y = -90.96f;
     transform.location.z = 2.0f;
     transform.rotation.roll = 0.0f;
     transform.rotation.pitch = 0.0f;
-    transform.rotation.yaw= 0.22f;
+    transform.rotation.yaw= -90.0f;
     
     // Spawn the trailer
     auto actor_trailer = world.SpawnActor(blueprint_trailer, transform);

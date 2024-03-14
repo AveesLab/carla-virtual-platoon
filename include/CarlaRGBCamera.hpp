@@ -18,6 +18,8 @@
 #include <carla/sensor/data/Image.h>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
+
+
 namespace cc = carla::client;
 namespace cg = carla::geom;
 namespace csd = carla::sensor::data;
@@ -43,7 +45,7 @@ private:
     boost::shared_ptr<carla::client::Actor> cam_actor;
     carla::geom::Transform camera_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> camera_bp;
-
+    void publishImage1(const csd::Image &carla_image);
     float rgbcam_x;
     float rgbcam_y;
     float rgbcam_z;

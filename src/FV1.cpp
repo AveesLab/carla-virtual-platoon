@@ -66,12 +66,12 @@ int main(int argc, const char *argv[]) {
     blueprint_fv1.SetAttribute("role_name", "FV1");
     auto map = world.GetMap();
     auto transform = RandomChoice(map->GetRecommendedSpawnPoints(), rng);
-    transform.location.x = -300.990f; // 300 , 303(11m)
-    transform.location.y = 30.0f;
+    transform.location.x = 412.47f; // 300 , 303(11m)
+    transform.location.y = -64.96f;
     transform.location.z = 2.0f;
     transform.rotation.roll = 0.0f;
     transform.rotation.pitch = 0.0f;
-    transform.rotation.yaw= 0.22f;
+    transform.rotation.yaw= -90.0f;
 
     // Spawn the trailer
     auto actor_trailer_fv1 = world.SpawnActor(blueprint_trailer_fv1, transform);
@@ -99,6 +99,12 @@ int main(int argc, const char *argv[]) {
   //  executor.add_node(node_lidar_fv1);
     executor.add_node(node_vehicle_fv1);
 
+     std::this_thread::sleep_for(20s);
+    vehicle_fv1->SetAutopilot(true);   
+
+    carla::geom::Vector3D target_velocity(11.11,0 , 0); // X 축을 따라 20 m/s 속
+
+    vehicle_fv1->EnableConstantVelocity(target_velocity);
 
     executor.spin();
     rclcpp::shutdown(); 
