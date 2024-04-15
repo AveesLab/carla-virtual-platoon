@@ -44,6 +44,7 @@ add_executable(LV_bridge
     nodes/CarlaRadar.cpp
     nodes/CarlaLidar.cpp
     nodes/CarlaVehicle.cpp
+    nodes/CarlaIMU.cpp
 )
 add_executable(FV1_bridge
     src/FV1.cpp
@@ -51,6 +52,7 @@ add_executable(FV1_bridge
     nodes/CarlaRadar.cpp
     nodes/CarlaLidar.cpp
     nodes/CarlaVehicle.cpp
+    nodes/CarlaIMU.cpp
 )
 
 add_executable(FV2_bridge
@@ -59,6 +61,7 @@ add_executable(FV2_bridge
     nodes/CarlaRadar.cpp
     nodes/CarlaLidar.cpp
     nodes/CarlaVehicle.cpp
+    nodes/CarlaIMU.cpp
 )
 
 
