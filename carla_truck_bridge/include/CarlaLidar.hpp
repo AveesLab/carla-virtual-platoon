@@ -32,7 +32,7 @@ using namespace std::string_literals;
 class CarlaLidarPublisher : public rclcpp::Node {
 
 public:
-    CarlaLidarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_,std::string name_);
+    CarlaLidarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_);
     ~CarlaLidarPublisher(){
         lidar->Destroy();
   }
@@ -61,5 +61,4 @@ private:
     std::string lidar_points_per_second;
     std::string lidar_range;
     std::string lidar_topic_name;
-    std::string role_name_;
 };

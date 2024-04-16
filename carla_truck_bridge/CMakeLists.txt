@@ -19,9 +19,45 @@ find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(Boost REQUIRED)
 find_package(TIFF REQUIRED)
-find_package(OpenCV)
-find_package(cv_bridge REQUIRED)
+find_package(ros2_msg REQUIRED)
 
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Quick REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+set(QT_PROJECT_SOURCES
+  # src	
+  src/controller/main.cpp
+  src/controller/controller.cpp
+  src/controller/ros2node.cpp
+  src/controller/controller.ui
+  src/controller/lvthread.cpp
+  src/controller/fv1thread.cpp
+  src/controller/fv2thread.cpp
+ 
+  # include
+  src/controller/controller.h
+  src/controller/ros2node.hpp
+  src/controller/lvthread.h
+  src/controller/fv1thread.h
+  src/controller/fv2thread.h
+)
+
+set(QT_PROJECT_SOURCES_DEPENDENCIES
+  rclcpp 
+  std_msgs 
+  Qt5Core 
+  Qt5Widgets 
+  ament_index_cpp 
+  ros2_msg
+  cv_bridge
+)
 
 set(ament_dependencies
   rclcpp
@@ -31,11 +67,10 @@ set(ament_dependencies
   cv_bridge
   image_transport
   Boost
-  OpenCV
-  cv_bridge
 )
 
 
+##############################################################################################
 include(dependency.cmake)
 
 add_executable(LV_bridge
@@ -63,8 +98,16 @@ add_executable(FV2_bridge
     nodes/CarlaVehicle.cpp
     nodes/CarlaIMU.cpp
 )
+##############################################################################################
+add_executable(controller ${QT_PROJECT_SOURCES})
+ament_target_dependencies(controller ${QT_PROJECT_SOURCES_DEPENDENCIES})
 
-
+target_link_libraries(controller
+  Qt5::Core
+  Qt5::Quick
+  Qt5::Widgets
+)
+##############################################################################################
 ament_target_dependencies(LV_bridge ${ament_dependencies} )
 
 target_include_directories(LV_bridge PUBLIC
@@ -79,8 +122,7 @@ target_link_directories(LV_bridge PUBLIC
 
 target_link_libraries(LV_bridge ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
 )
-
-
+##############################################################################################
 ament_target_dependencies(FV1_bridge ${ament_dependencies} )
 
 target_include_directories(FV1_bridge PUBLIC
@@ -95,7 +137,7 @@ target_link_directories(FV1_bridge PUBLIC
 
 target_link_libraries(FV1_bridge ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
 )
-
+##############################################################################################
 ament_target_dependencies(FV2_bridge ${ament_dependencies} )
 
 target_include_directories(FV2_bridge PUBLIC
@@ -110,11 +152,12 @@ target_link_directories(FV2_bridge PUBLIC
 
 target_link_libraries(FV2_bridge ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
 )
-
+##############################################################################################
 install(TARGETS
 LV_bridge 
 FV1_bridge
 FV2_bridge
+controller
 DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY

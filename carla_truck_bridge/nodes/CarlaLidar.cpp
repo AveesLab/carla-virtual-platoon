@@ -2,7 +2,7 @@
 
 #include <boost/make_shared.hpp>
 
-CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor,carla::client::World& world_,std::string name_)
+CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor,carla::client::World& world_)
     : Node("carla_lidar_publisher", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)),world_(world_) {
@@ -12,7 +12,7 @@ CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Bluepr
 
     this->blueprint_library = blueprint_library;
     this->actor = actor;
-    this->role_name_ = name_;
+
 
     lidar_bp = boost::shared_ptr<carla::client::ActorBlueprint>(
         const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.lidar.ray_cast"))
@@ -26,16 +26,15 @@ CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Bluepr
     this->get_parameter_or("lidar/yaw",lidar_yaw,0.0f);
     this->get_parameter_or("lidar/roll",lidar_roll,0.0f);
     this->get_parameter_or("lidar/sensor_tick",lidar_sensor_tick,std::string("0.1f"));
-    this->get_parameter_or("lidar/horizontal_fov",lidar_horizontal_fov,std::string("33.0f"));
+    this->get_parameter_or("lidar/horizontal_fov",lidar_horizontal_fov,std::string("30.0f"));
     this->get_parameter_or("lidar/upper_fov",lidar_upper_fov,std::string("0.0f"));
     this->get_parameter_or("lidar/lower_fov",lidar_lower_fov,std::string("0.0f"));
-    this->get_parameter_or("lidar/points_per_second",lidar_points_per_second,std::string("200000"));
-    this->get_parameter_or("lidar/range",lidar_range,std::string("25.0f"));
+    this->get_parameter_or("lidar/points_per_second",lidar_points_per_second,std::string("30000"));
+    this->get_parameter_or("lidar/range",lidar_range,std::string("30.0f"));
     this->get_parameter_or("lidar_topic_name",lidar_topic_name,std::string("LV/carla/lidar"));
-    lidar_topic_name = role_name_ + lidar_topic_name;
+    
 
     lidar_bp->SetAttribute("sensor_tick", lidar_sensor_tick);
-    lidar_bp->SetAttribute("rotation_frequency","56000.0");
      std::cerr << lidar_horizontal_fov  << std::endl;
     lidar_bp->SetAttribute("horizontal_fov", lidar_horizontal_fov);
     std::cerr << lidar_points_per_second  << std::endl;

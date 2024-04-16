@@ -19,4 +19,3 @@ void CarlaIMUPublisher::CarlaIMUPublisher_callback() {
     message.data.push_back(acc_.z);
     IMUPublisher_->publish(message);
 }
-

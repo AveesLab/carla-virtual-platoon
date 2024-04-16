@@ -30,7 +30,7 @@ CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Bluepr
     this->get_parameter_or("radar/vertical_fov",radar_vertical_fov,std::string("30.0f"));
     this->get_parameter_or("radar/points_per_second",radar_points_per_second,std::string("80000"));
     this->get_parameter_or("radar/range",radar_range,std::string("100.0f"));
-    this->get_parameter_or("radar_topic_name",radar_topic_name,std::string("LV/carla/radar"));
+    this->get_parameter_or("radar_topic_name",radar_topic_name,std::string("carla/radar"));
     radar_topic_name  = role_name_ + radar_topic_name;
     radar_bp->SetAttribute("sensor_tick", radar_sensor_tick);
     radar_bp->SetAttribute("horizontal_fov", radar_horizontal_fov);

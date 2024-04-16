@@ -45,13 +45,13 @@ int main(int argc, const char *argv[]) {
     // Find a valid spawn point for trailer.
     auto map = world.GetMap();
     auto transform = RandomChoice(map->GetRecommendedSpawnPoints(), rng);
-    
-    transform.location.x = 412.47f; // 300 , 303(11m)
-    transform.location.y = -90.96f;
+
+    transform.location.x = -270.990f; // 300 , 303(11m)
+    transform.location.y = 30.0f;
     transform.location.z = 2.0f;
     transform.rotation.roll = 0.0f;
     transform.rotation.pitch = 0.0f;
-    transform.rotation.yaw= -90.0f;
+    transform.rotation.yaw= 0.22f;
     
     // Spawn the trailer
     auto actor_trailer = world.SpawnActor(blueprint_trailer, transform);
@@ -78,14 +78,18 @@ int main(int argc, const char *argv[]) {
     rclcpp::init(argc, argv);
 
     rclcpp::executors::MultiThreadedExecutor executor;
-    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world,"/LV/");
+    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world);
     //auto node_radar = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor,world);
-    auto node_lidar = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor,world,"/LV/");
-    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle,"/LV/");
+    auto node_lidar = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor,world);
+    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle);
     //executor.add_node(node);
     executor.add_node(node_lidar);
     executor.add_node(node_vehicle);
-
+     // Set autopilot
+//    std::this_thread::sleep_for(10s);
+//    vehicle->SetAutopilot(true);   
+//    carla::geom::Vector3D target_velocity(10.4444,0 , 0); 
+//    vehicle->EnableConstantVelocity(target_velocity);
     executor.spin();
 
     rclcpp::shutdown(); 

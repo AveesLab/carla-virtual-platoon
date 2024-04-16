@@ -1,18 +1,23 @@
 #include "CarlaVehicle.hpp"
 #include <boost/make_shared.hpp>
 
-CarlaVehicleController::CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_,std::string name_)
+CarlaVehicleController::CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_)
     : Node("carla_lidar_publisher", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)),Vehicle_(vehicle_) {
 
-            VelocityPublisher_ = this->create_publisher<std_msgs::msg::Float32>(name_ + "velocity_info",1);
+
+
+
+
+
+            VelocityPublisher_ = this->create_publisher<std_msgs::msg::Float32>("velocity_info",1);
             timer_1ms = this->create_wall_timer(
             1ms, std::bind(&CarlaVehicleController::VelocityPublisher_callback, this));
 
             
-            SteerSubscriber_ = this->create_subscription<std_msgs::msg::Float32>(name_ + "steer", 1, std::bind(&CarlaVehicleController::SteerSubCallback, this, std::placeholders::_1));
-            VelocitySubscriber_ = this->create_subscription<std_msgs::msg::Float32>(name_ + "velocity", 1, std::bind(&CarlaVehicleController::VelocitySubCallback, this, std::placeholders::_1));
+            SteerSubscriber_ = this->create_subscription<std_msgs::msg::Float32>("steer", 1, std::bind(&CarlaVehicleController::SteerSubCallback, this, std::placeholders::_1));
+            VelocitySubscriber_ = this->create_subscription<std_msgs::msg::Float32>("velocity", 1, std::bind(&CarlaVehicleController::VelocitySubCallback, this, std::placeholders::_1));
 
             this->control.hand_brake = true;
             Vehicle_->ApplyControl(control);
