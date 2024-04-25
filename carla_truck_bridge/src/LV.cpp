@@ -78,7 +78,7 @@ int main(int argc, const char *argv[]) {
     rclcpp::init(argc, argv);
 
     rclcpp::executors::MultiThreadedExecutor executor;
-    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world);
+    auto node = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor,world,"/LV/");
     //auto node_radar = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor,world);
     auto node_lidar = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor,world);
     auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle);

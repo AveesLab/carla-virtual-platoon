@@ -91,12 +91,13 @@ int main(int argc, const char *argv[]) {
     
     rclcpp::init(argc, argv);
     rclcpp::executors::MultiThreadedExecutor executor;
-    auto node_fv1 = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world);
+    auto node_fv1 = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world,"/FV1/");
     auto node_radar_fv1 = std::make_shared<CarlaRadarPublisher>(blueprint_library,actor_fv1,world,"/FV1/");
+    auto node_fv1_spec = std::make_shared<CarlaRGBCameraPublisher>(blueprint_library,actor_fv1,world,"/tmptmptmp/");
   //  auto node_lidar_fv1 = std::make_shared<CarlaLidarPublisher>(blueprint_library,actor_fv1,world);
     auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle_fv1);
 
-    
+    executor.add_node(node_fv1_spec);
     executor.add_node(node_fv1);
     executor.add_node(node_radar_fv1);
    // executor.add_node(node_lidar_fv1);

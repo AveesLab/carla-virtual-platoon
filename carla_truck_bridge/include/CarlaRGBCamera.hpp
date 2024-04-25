@@ -18,6 +18,8 @@
 #include <carla/sensor/data/Image.h>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
+
+
 namespace cc = carla::client;
 namespace cg = carla::geom;
 namespace csd = carla::sensor::data;
@@ -29,7 +31,7 @@ using namespace std::string_literals;
 class CarlaRGBCameraPublisher : public rclcpp::Node {
 
 public:
-    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_);
+    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_, std::string name_);
     ~CarlaRGBCameraPublisher() {
     camera->Destroy();
     }
@@ -43,7 +45,7 @@ private:
     boost::shared_ptr<carla::client::Actor> cam_actor;
     carla::geom::Transform camera_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> camera_bp;
-
+    void publishImage1(const csd::Image &carla_image);
     float rgbcam_x;
     float rgbcam_y;
     float rgbcam_z;
@@ -52,6 +54,6 @@ private:
     float rgbcam_roll;
     std::string rgbcam_sensor_tick;
     std::string rgbcam_topic_name;
-    
+    std::string role_name_;
     
 };
