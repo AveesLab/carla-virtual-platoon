@@ -3,18 +3,9 @@
 #include <boost/make_shared.hpp>
 
 
-#include <opencv2/opencv.hpp> // OpenCV 헤더 파일 추가
-#include <sensor_msgs/msg/image.hpp> // ROS2 이미지 메시지 헤더
+#include <opencv2/opencv.hpp>
+#include <sensor_msgs/msg/image.hpp> 
 
-
-static void SaveSemSegImageToDisk(const csd::Image &image) {
-  using namespace carla::image;  
-  char buffer[9u];
-  std::snprintf(buffer, sizeof(buffer), "%08zu", image.GetFrame());
-  auto filename = "_images/"s + buffer + ".png";  
-  auto view = ImageView::MakeView(image);
-  ImageIO::WriteView(filename, view);
-}
 CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor,int num)
     : Node("carla_camera_publisher", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
