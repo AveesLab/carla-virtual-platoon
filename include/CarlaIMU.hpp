@@ -1,11 +1,12 @@
 #include "shared_carlalib.h"
-
+#include <boost/make_shared.hpp>
+#include <rclcpp/qos.hpp>
 
 
 class CarlaIMUPublisher : public rclcpp::Node {
 
 public:
-    CarlaIMUPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,std::string name_);
+    CarlaIMUPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_);
 
 private:
     rclcpp::TimerBase::SharedPtr timer_1ms;

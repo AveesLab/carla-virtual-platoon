@@ -1,19 +1,12 @@
 #include "CarlaRGBCamera.hpp"
-#include <rclcpp/qos.hpp>
-#include <boost/make_shared.hpp>
 
-
-#include <opencv2/opencv.hpp>
-#include <sensor_msgs/msg/image.hpp> 
-
-CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor,int num)
+CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
     : Node("carla_camera_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
-    this->actor = actor;
 
     this->get_parameter_or("rgbcam/x",rgbcam_x,2.0f);
     this->get_parameter_or("rgbcam/y",rgbcam_y,0.0f);

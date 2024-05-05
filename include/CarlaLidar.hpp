@@ -1,16 +1,16 @@
 #include "shared_carlalib.h"
-
+#include <boost/make_shared.hpp>
+#include <rclcpp/qos.hpp>
 
 
 class CarlaLidarPublisher : public rclcpp::Node {
 
 public:
-    CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor,int num);
+    CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~CarlaLidarPublisher(){
         lidar->Destroy();
   }
 private:
-    boost::shared_ptr<carla::client::Actor> actor = nullptr; 
     void publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &lidar_data);
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
 

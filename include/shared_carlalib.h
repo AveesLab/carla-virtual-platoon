@@ -28,6 +28,8 @@
 #include <carla/sensor/data/RadarMeasurement.h>
 #include "sensor_msgs/msg/point_cloud2.hpp"
 #include <std_msgs/msg/float32_multi_array.hpp>
+#include <opencv2/opencv.hpp>
+#include <sensor_msgs/msg/image.hpp> 
 namespace cc = carla::client;
 namespace cg = carla::geom;
 namespace csd = carla::sensor::data;

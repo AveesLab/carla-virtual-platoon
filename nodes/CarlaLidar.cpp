@@ -1,16 +1,13 @@
 #include "CarlaLidar.hpp"
 
-#include <boost/make_shared.hpp>
-
-CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor,int num)
+CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     : Node("carla_lidar_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(false)
            .automatically_declare_parameters_from_overrides(true)){
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
-    this->actor = actor;
-    
+
     this->get_parameter_or("lidar/x",lidar_x,2.3f);
     this->get_parameter_or("lidar/y",lidar_y,0.0f);
     this->get_parameter_or("lidar/z",lidar_z,1.0f);
@@ -25,7 +22,7 @@ CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor>
     this->get_parameter_or("lidar/points_per_second",lidar_points_per_second,std::string("30000"));
     this->get_parameter_or("lidar/range",lidar_range,std::string("30.0f"));
     this->get_parameter_or("lidar_topic_name",lidar_topic_name,std::string("carla/lidar"));
-    std::cerr <<lidar_roll <<std::endl;
+
     publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(lidar_topic_name, custom_qos);
 
     lidar_bp = boost::shared_ptr<carla::client::ActorBlueprint>( const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.lidar.ray_cast")));

@@ -74,10 +74,10 @@ void generate_truck(int TruckNum) {
 
 
     rclcpp::executors::MultiThreadedExecutor executor; 
-    auto node_camera = std::make_shared<CarlaRGBCameraPublisher>(actor_truck,TruckNum);
-    //auto node_radar = std::make_shared<CarlaRadarPublisher>(actor_fv1,TruckNum);
-    auto node_lidar = std::make_shared<CarlaLidarPublisher>(actor_truck,TruckNum);
-    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle_truck,TruckNum);
+    auto node_camera = std::make_shared<CarlaRGBCameraPublisher>(actor_truck);
+    //auto node_radar = std::make_shared<CarlaRadarPublisher>(actor_truck);
+    auto node_lidar = std::make_shared<CarlaLidarPublisher>(actor_truck);
+    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle_truck);
 
     executor.add_node(node_camera);
     //executor.add_node(node_radar);

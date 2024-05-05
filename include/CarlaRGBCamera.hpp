@@ -1,16 +1,16 @@
 #include "shared_carlalib.h"
-
+#include <boost/make_shared.hpp>
+#include <rclcpp/qos.hpp>
 
 
 class CarlaRGBCameraPublisher : public rclcpp::Node {
 
 public:
-    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor, int num);
+    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~CarlaRGBCameraPublisher() {
         camera->Destroy();
     }
 private:
-    boost::shared_ptr<carla::client::Actor> actor = nullptr; 
     void publishImage(const csd::Image &carla_image);
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;
     boost::shared_ptr<carla::client::Sensor> camera;

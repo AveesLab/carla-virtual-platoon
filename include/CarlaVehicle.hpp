@@ -1,11 +1,12 @@
 #include "shared_carlalib.h"
-
+#include <boost/make_shared.hpp>
+#include <rclcpp/qos.hpp>
 
 
 class CarlaVehicleController : public rclcpp::Node {
 
 public:
-    CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_, int num);
+    CarlaVehicleController(boost::shared_ptr<carla::client::Vehicle> vehicle_);
 
 private:
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr SteerSubscriber_;

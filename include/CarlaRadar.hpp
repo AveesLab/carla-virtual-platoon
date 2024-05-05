@@ -1,5 +1,6 @@
 #include "shared_carlalib.h"
-
+#include <boost/make_shared.hpp>
+#include <rclcpp/qos.hpp>
 
 
 
@@ -7,14 +8,11 @@
 class CarlaRadarPublisher : public rclcpp::Node {
 
 public:
-    CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor, carla::client::World& world_,std::string name_);
+    CarlaRadarPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~CarlaRadarPublisher(){
         radar->Destroy();
   }
 private:
-    boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library = nullptr;
-    boost::shared_ptr<carla::client::Actor> actor = nullptr; 
-    carla::client::World& world_;
     void publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &radar_data);
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
 
