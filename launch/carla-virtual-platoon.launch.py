@@ -6,7 +6,7 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration, TextSubstitution
 
-def generate_nodes(context, *, num_trucks):
+def generate_nodes(context, *, num_trucks, map_name):
     nodes = []
 
     ros_param_file = os.path.join(
@@ -22,15 +22,19 @@ def generate_nodes(context, *, num_trucks):
             namespace=f'truck{i-1}',
             output='screen',
             parameters=[ros_param_file],
-            arguments=[f'--truck_id={i-1}']  # 명령줄 인자 추가
+            arguments=[
+                f'--truck_id={i-1}', 
+                f'--map_name={map_name}'
+            ]  
         )
-        print(ros_param_file)
         nodes.append(node)
     return nodes
 
 def launch_setup(context):
     num_trucks = LaunchConfiguration('NumTrucks').perform(context)
-    return generate_nodes(context, num_trucks=num_trucks)
+    map_name = LaunchConfiguration('MapName').perform(context)  
+    return generate_nodes(context, num_trucks=num_trucks, map_name=map_name)
+
 
 def generate_launch_description():
 
@@ -40,7 +44,14 @@ def generate_launch_description():
         description='Number of trucks'
     )
 
+    declare_map_name = DeclareLaunchArgument(
+        'Maps',
+        default_value='IHP',
+        description='MapName'
+    )
+
     return LaunchDescription([
         declare_num_trucks,
+        declare_map_name,
         OpaqueFunction(function=launch_setup)
     ])

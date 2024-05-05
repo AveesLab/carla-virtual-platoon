@@ -22,32 +22,41 @@ static auto &RandomChoice(const RangeT &range, RNG &&generator) {
   return range[dist(std::forward<RNG>(generator))];
 }
 
-carla::geom::Location GetTruckLocation(int num) {
+carla::geom::Location GetTruckLocation(int truck_num, std::string map_name) {
+    float x = 0.0f , y = 0.0f ,z =0.0f;
+    if (truckLocations.find(map_name) != truckLocations.end() && truckLocations[map_name].find(truck_num) != truckLocations[map_name].end()) {
+        x = truckLocations[map_name][truck_num][0];
+        y = truckLocations[map_name][truck_num][1];
+        z = truckLocations[map_name][truck_num][2];
+    } else {
+        throw std::runtime_error("Invalid map name or truck index for location.");
+    }
 
-    float x = IHP_loc[num][0];
-    float y = IHP_loc[num][1];
-    float z = IHP_loc[num][2];
     return carla::geom::Location(x,y,z);
 }
 
-carla::geom::Rotation GetTruckRotation(int num) {
-
-    float pitch = IHP_rot[num][0];
-    float yaw = IHP_rot[num][1];
-    float roll = IHP_rot[num][2];
+carla::geom::Rotation GetTruckRotation(int truck_num, std::string map_name) {
+    float pitch = 0.0f , yaw = 0.0f ,roll =0.0f;
+    if (truckRotations.find(map_name) != truckRotations.end() && truckRotations[map_name].find(truck_num) != truckRotations[map_name].end()) {
+        pitch = truckRotations[map_name][truck_num][0];
+        yaw = truckRotations[map_name][truck_num][1];
+        roll = truckRotations[map_name][truck_num][2];
+    } else {
+        throw std::runtime_error("Invalid map name or truck index for rotation.");
+    }
     return carla::geom::Rotation(pitch,yaw,roll);
 }
 
-void connect_to_carla() {
+void connect_to_carla(int truck_num) {
     //Connecting to CARLA server;
     client = new cc::Client(host, port);
     client->SetTimeout(40s);
-    std::cerr << "Trucks connected to CARLA server" << '\n';
+    std::cerr << truck_num << " Truck connected to CARLA server" << '\n';
     world = new cc::World(client->GetWorld());
     blueprint_library = world->GetBlueprintLibrary();
 }
 
-void generate_truck(int TruckNum) {
+void generate_truck(int truck_num, std::string map_name) {
     std::mt19937_64 rng((std::random_device())());  
 
     //Get a Trailer
@@ -57,8 +66,8 @@ void generate_truck(int TruckNum) {
     auto truck = blueprint_library->Filter("dafxf");
     auto blueprint_truck = RandomChoice(*truck, rng);  
 
-    carla::geom::Location TruckLocation = GetTruckLocation(TruckNum);
-    carla::geom::Rotation TruckRotation = GetTruckRotation(TruckNum);
+    carla::geom::Location TruckLocation = GetTruckLocation(truck_num,map_name);
+    carla::geom::Rotation TruckRotation = GetTruckRotation(truck_num,map_name);
     carla::geom::Transform transform(TruckLocation,TruckRotation);
     
     // Spawn the trailer
@@ -97,18 +106,28 @@ int main(int argc, char *argv[]) {
     try {
         rclcpp::init(argc, argv);
 
-        int NumTrucks = 1; // Default value
+        int truck_num = 1; // Default value
+        std::string map_name = "IHP"; //Default map
 
-        std::string prefix("--truck_id=");
+        std::string prefix_truck_id("--truck_id=");
+        std::string prefix_map_name("--map_name=");
         for (int i = 1; i < argc; ++i) {
             std::string arg = argv[i];
-            if (arg.find(prefix) == 0) {
-                NumTrucks = std::atoi(arg.substr(prefix.length()).c_str());
+            if (arg.find(prefix_truck_id) == 0) {
+                truck_num = std::atoi(arg.substr(prefix_truck_id.length()).c_str());
+            }
+            else if (arg.find(prefix_map_name) == 0) {
+                map_name = arg.substr(prefix_map_name.length());
             }
         }
-        std::cout << "Truck Number : " << NumTrucks << std::endl;
-        connect_to_carla();
-        generate_truck(NumTrucks);
+
+        if(truck_num == 0 ) {
+            std::cout << "Truck Number : " << truck_num << std::endl;
+            std::cout << "Map Name : " << map_name << std::endl;            
+        }
+
+        connect_to_carla(truck_num);
+        generate_truck(truck_num,map_name);
 
         rclcpp::shutdown();
     } 
