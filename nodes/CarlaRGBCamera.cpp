@@ -7,13 +7,14 @@
 #include <sensor_msgs/msg/image.hpp> 
 
 CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor,int num)
-    : Node("carla_camera_publisher", rclcpp::NodeOptions()
+    : Node("carla_camera_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
-    
+    this->actor = actor;
+
     this->get_parameter_or("rgbcam/x",rgbcam_x,2.0f);
     this->get_parameter_or("rgbcam/y",rgbcam_y,0.0f);
     this->get_parameter_or("rgbcam/z",rgbcam_z,3.5f);
@@ -21,21 +22,20 @@ CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client
     this->get_parameter_or("rgbcam/yaw",rgbcam_yaw,0.0f);
     this->get_parameter_or("rgbcam/roll",rgbcam_roll,0.0f);
     this->get_parameter_or("rgbcam/sensor_tick",rgbcam_sensor_tick,std::string("0.033333f"));
-    this->get_parameter_or("rgbcam_topic_name",rgbcam_topic_name,std::string("/carla/image_raw"));
-    
+    this->get_parameter_or("rgbcam/image_size_x",rgbcam_image_size_x,std::string("640"));
+    this->get_parameter_or("rgbcam/image_size_y",rgbcam_image_size_y,std::string("480"));
+    this->get_parameter_or("rgbcam/fov",rgbcam_fov,std::string("90.0f"));
+    this->get_parameter_or("rgbcam_topic_name",rgbcam_topic_name,std::string("carla/image_raw"));
 
-    rgbcam_topic_name = "/truck" + std::to_string(num) + rgbcam_topic_name;
-    this->actor = actor;
   
     publisher_ = this->create_publisher<sensor_msgs::msg::Image>(rgbcam_topic_name, custom_qos);
 
     camera_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.camera.rgb")));
-    
+    assert(camera_bp != nullptr);
     camera_bp->SetAttribute("sensor_tick", rgbcam_sensor_tick);
     camera_bp->SetAttribute("image_size_x","640");
     camera_bp->SetAttribute("image_size_y","480");
-    camera_bp->SetAttribute("fov", "90.0");
-    assert(camera_bp != nullptr);
+    camera_bp->SetAttribute("fov", "90.0f");
 
     camera_transform = cg::Transform{ cg::Location{rgbcam_x, rgbcam_y, rgbcam_z}, cg::Rotation{rgbcam_pitch, rgbcam_yaw, rgbcam_roll}}; // pitch, yaw, roll.
     cam_actor = world->SpawnActor(*camera_bp, camera_transform, actor.get());

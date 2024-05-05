@@ -13,6 +13,7 @@ cc::Client *client;
 cc::World *world;
 carla::SharedPtr<carla::client::BlueprintLibrary> blueprint_library;
 
+
 /// Pick a random element from @a range.
 template <typename RangeT, typename RNG>
 static auto &RandomChoice(const RangeT &range, RNG &&generator) {
@@ -23,17 +24,17 @@ static auto &RandomChoice(const RangeT &range, RNG &&generator) {
 
 carla::geom::Location GetTruckLocation(int num) {
 
-    float x = Town04_loc[num][0];
-    float y = Town04_loc[num][1];
-    float z = Town04_loc[num][2];
+    float x = IHP_loc[num][0];
+    float y = IHP_loc[num][1];
+    float z = IHP_loc[num][2];
     return carla::geom::Location(x,y,z);
 }
 
 carla::geom::Rotation GetTruckRotation(int num) {
 
-    float pitch = Town04_rot[num][0];
-    float yaw = Town04_rot[num][1];
-    float roll = Town04_rot[num][2];
+    float pitch = IHP_rot[num][0];
+    float yaw = IHP_rot[num][1];
+    float roll = IHP_rot[num][2];
     return carla::geom::Rotation(pitch,yaw,roll);
 }
 
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]) {
         rclcpp::init(argc, argv);
 
         int NumTrucks = 1; // Default value
+
         std::string prefix("--truck_id=");
         for (int i = 1; i < argc; ++i) {
             std::string arg = argv[i];

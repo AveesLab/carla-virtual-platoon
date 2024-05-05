@@ -27,5 +27,7 @@ private:
     std::string rgbcam_sensor_tick;
     std::string rgbcam_topic_name;
     std::string role_name_;
-    
+    std::string rgbcam_image_size_x;
+    std::string rgbcam_image_size_y;
+    std::string rgbcam_fov;
 };

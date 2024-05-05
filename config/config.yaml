@@ -1,0 +1,51 @@
+/**:  
+  ros__parameters:
+    rgbcam/x : 2.0
+    rgbcam/y : 0.0
+    rgbcam/z : 3.5
+    rgbcam/pitch : -15.0 
+    rgbcam/yaw : 0.0
+    rgbcam/roll : 0.0
+    rgbcam/sensor_tick : "0.033333f"
+    rgbcam/image_size_x : "640"
+    rgbcam/image_size_y : "480"
+    rgbcam/fov : "90.0f"
+    rgbcam_topic_name : "carla/image_raw"
+
+/**:  
+  ros__parameters:
+    radar/x : 2.3
+    radar/y : 0.0
+    radar/z : 1.5
+    radar/pitch : 0.0 
+    radar/yaw : 0.0
+    radar/roll : 0.0
+    radar/sensor_tick : "0.1f"
+    radar/horizontal_fov : "40.0f"
+    radar/vertical_fov : "30.0f"
+    radar/points_per_second : "8000"
+    radar/range : "300.0f"
+    radar_topic_name: "carla/radar"
+
+/**:  
+  ros__parameters: 
+    lidar/x : 2.3
+    lidar/y : 0.0
+    lidar/z : 1.5
+    lidar/pitch : 0.0 
+    lidar/yaw : 0.0
+    lidar/roll : 0.0
+    lidar/sensor_tick : "0.1f"
+    lidar/rotation_frequency : "30.0f"
+    lidar/horizontal_fov : "30.0f"
+    lidar/upper_fov : "0.0f"
+    lidar/lower_fov : "0.0f"
+    lidar/points_per_second : "30000"
+    lidar/range : "100.0f"
+    lidar_topic_name : "carla/lidar"
+
+/**:  
+  ros__parameters: 
+    info_topic_name : "velocity_info"
+    steer_topic_name : "steer"
+    velocity_topic_name : "velocity"

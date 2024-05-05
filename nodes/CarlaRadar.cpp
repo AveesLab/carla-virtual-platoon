@@ -1,5 +1,4 @@
 #include "CarlaRadar.hpp"
-
 #include <boost/make_shared.hpp>
 
 CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::BlueprintLibrary> blueprint_library, boost::shared_ptr<carla::client::Actor> actor,carla::client::World& world_, std::string name_)
@@ -16,7 +15,7 @@ CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Bluepr
 
     radar_bp = boost::shared_ptr<carla::client::ActorBlueprint>(
         const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.radar"))
-);
+    );
 
 
     this->get_parameter_or("radar/x",radar_x,2.3f);
@@ -49,7 +48,7 @@ CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Bluepr
         auto radar_data = boost::static_pointer_cast<carla::sensor::data::RadarMeasurement>(data);
         assert(radar_data != nullptr);
         publishRadarData(radar_data);
-  });
+    });
 }
 
 

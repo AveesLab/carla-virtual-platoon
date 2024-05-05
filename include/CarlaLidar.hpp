@@ -32,4 +32,5 @@ private:
     std::string lidar_points_per_second;
     std::string lidar_range;
     std::string lidar_topic_name;
+    std::string lidar_rotation_frequency;
 };

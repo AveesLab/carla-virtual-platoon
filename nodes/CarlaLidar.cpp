@@ -3,15 +3,13 @@
 #include <boost/make_shared.hpp>
 
 CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor,int num)
-    : Node("carla_lidar_publisher", rclcpp::NodeOptions()
-               .allow_undeclared_parameters(true)
+    : Node("carla_lidar_node", rclcpp::NodeOptions()
+               .allow_undeclared_parameters(false)
            .automatically_declare_parameters_from_overrides(true)){
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
     this->actor = actor;
-
-    lidar_bp = boost::shared_ptr<carla::client::ActorBlueprint>( const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.lidar.ray_cast")));
     
     this->get_parameter_or("lidar/x",lidar_x,2.3f);
     this->get_parameter_or("lidar/y",lidar_y,0.0f);
@@ -20,27 +18,28 @@ CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor>
     this->get_parameter_or("lidar/yaw",lidar_yaw,0.0f);
     this->get_parameter_or("lidar/roll",lidar_roll,0.0f);
     this->get_parameter_or("lidar/sensor_tick",lidar_sensor_tick,std::string("0.1f"));
+    this->get_parameter_or("lidar/rotation_frequency",lidar_rotation_frequency,std::string("30.0f"));
     this->get_parameter_or("lidar/horizontal_fov",lidar_horizontal_fov,std::string("30.0f"));
     this->get_parameter_or("lidar/upper_fov",lidar_upper_fov,std::string("0.0f"));
     this->get_parameter_or("lidar/lower_fov",lidar_lower_fov,std::string("0.0f"));
     this->get_parameter_or("lidar/points_per_second",lidar_points_per_second,std::string("30000"));
     this->get_parameter_or("lidar/range",lidar_range,std::string("30.0f"));
-    this->get_parameter_or("lidar_topic_name",lidar_topic_name,std::string("/carla/lidar"));
-    lidar_topic_name  = "/truck" + std::to_string(num) + lidar_topic_name;
+    this->get_parameter_or("lidar_topic_name",lidar_topic_name,std::string("carla/lidar"));
+    std::cerr <<lidar_roll <<std::endl;
+    publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(lidar_topic_name, custom_qos);
 
+    lidar_bp = boost::shared_ptr<carla::client::ActorBlueprint>( const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.lidar.ray_cast")));
+    assert(lidar_bp != nullptr);
     lidar_bp->SetAttribute("sensor_tick", lidar_sensor_tick);
+    lidar_bp->SetAttribute("rotation_frequency",lidar_rotation_frequency);
     lidar_bp->SetAttribute("horizontal_fov", lidar_horizontal_fov);
     lidar_bp->SetAttribute("points_per_second", lidar_points_per_second);
     lidar_bp->SetAttribute("upper_fov", lidar_upper_fov);
     lidar_bp->SetAttribute("lower_fov", lidar_lower_fov);
     lidar_bp->SetAttribute("range", lidar_range);
     lidar_bp->SetAttribute("channels","1");
-    
-    assert(lidar_bp != nullptr);
-    publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(lidar_topic_name, custom_qos);
-    lidar_transform = cg::Transform{
-        cg::Location{lidar_x, lidar_y, lidar_z},   // x, y, z.
-        cg::Rotation{lidar_pitch, lidar_yaw, lidar_roll}}; // pitch, yaw, roll.
+
+    lidar_transform = cg::Transform{ cg::Location{lidar_x, lidar_y, lidar_z}, cg::Rotation{lidar_pitch, lidar_yaw, lidar_roll}}; // pitch, yaw, roll.
     lidar_actor = world->SpawnActor(*lidar_bp, lidar_transform, actor.get());
     lidar = boost::static_pointer_cast<cc::Sensor>(lidar_actor);
 
