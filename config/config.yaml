@@ -40,7 +40,7 @@
     lidar/horizontal_fov : "30.0f"
     lidar/upper_fov : "0.0f"
     lidar/lower_fov : "0.0f"
-    lidar/points_per_second : "30000"
+    lidar/points_per_second : "20000"
     lidar/range : "100.0f"
     lidar_topic_name : "carla/lidar"
 
