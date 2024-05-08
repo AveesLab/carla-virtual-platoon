@@ -175,7 +175,7 @@ git clone -b sea-me https://github.com/AveesLab/carla-virtual-platoon.git
 cd ~/carla/PythonAPI/carla
 cp ./dependencies ~/ros2_ws/src/carla-virtual-platoon
 
-cd ~/ros2_ws/src/carla-virtual-platoon=
+cd ~/ros2_ws/src/carla-virtual-platoon
 mv dependencies libcarla-install
 ```
 > Packages build
