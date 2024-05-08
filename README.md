@@ -182,10 +182,8 @@ mv dependencies libcarla-install
 ```
 cd ~/ros2_ws
 source /opt/ros/galactic/setup.bash
-colcon build --packages-select ros2_msg
-
-source ./install/setup.bash
 colcon build --symlink-install
+source ./install/setup.bash
 ```
 
 # 8. Run
