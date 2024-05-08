@@ -200,6 +200,10 @@ make launch
 ```
 source ~/ros2_ws/instal/setup.bash
 ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=Town04_Opt
+
+or
+
+ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=k-track
 ```
 
 
