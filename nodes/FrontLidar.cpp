@@ -50,8 +50,7 @@ FrontLidarPublisher::FrontLidarPublisher(boost::shared_ptr<carla::client::Actor>
 
 
 
-void FrontLidarPublisher::publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &carla_lidar_measurement)
-    {
+void FrontLidarPublisher::publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &carla_lidar_measurement) {
     sensor_msgs::msg::PointCloud2 point_cloud_msg;
     point_cloud_msg.header.stamp = this->now();
     point_cloud_msg.header.frame_id = "lidar_frame";

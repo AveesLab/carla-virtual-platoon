@@ -45,8 +45,7 @@ FrontRadarPublisher::FrontRadarPublisher(boost::shared_ptr<carla::client::Actor>
 
 
 
-void FrontRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement)
-    {
+void FrontRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement) {
     sensor_msgs::msg::PointCloud2 radar_msg;
     radar_msg.header.stamp = this->now();
     radar_msg.header.frame_id = "laser";
@@ -103,8 +102,7 @@ void FrontRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMea
   
     size_t offset = 0;
    
-    for (size_t i = 0; i < carla_radar_measurement->GetDetectionAmount(); ++i)
-    {
+    for (size_t i = 0; i < carla_radar_measurement->GetDetectionAmount(); ++i) {
       const auto &detection = carla_radar_measurement->at(i);
       float x = detection.depth * std::cos(detection.azimuth) * std::cos(-detection.altitude);
       float y = detection.depth * std::sin(-detection.azimuth) * std::cos(detection.altitude);
