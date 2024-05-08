@@ -193,6 +193,9 @@ cd ~/carla
 make launch
 ```
 
+> Run Server
+![seame(1)](https://github.com/AveesLab/carla-virtual-platoon/assets/83895074/75f873b0-613b-4718-a1cb-8747b4c604a7)
+
 > Run ros2 launch
 ```
 source ~/ros2_ws/instal/setup.bash
