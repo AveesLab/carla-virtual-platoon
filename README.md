@@ -168,14 +168,14 @@ mkdir -p ~/ros2_ws/src
 > Install packages
 ```
 cd ~/ros2_ws/src
-git clone -b sea-me https://github.com/AveesLab/carla_truck_bridge.git
+git clone -b sea-me https://github.com/AveesLab/carla-virtual-platoon.git
 ```
 > Set build dependency
 ```
 cd ~/carla/PythonAPI/carla
-cp ./dependencies ~/ros2_ws/src/carla_truck_bridge/carla_truck_bridge
+cp ./dependencies ~/ros2_ws/src/carla-virtual-platoon
 
-cd ~/ros2_ws/src/carla_truck_bridge/carla_truck_bridge
+cd ~/ros2_ws/src/carla-virtual-platoon=
 mv dependencies libcarla-install
 ```
 > Packages build
