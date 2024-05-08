@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
         std::string map_name = "IHP"; //Default map
 
         std::string prefix_truck_id("--truck_id=");
-        std::string prefix_map_name("--map_name=");
+        std::string prefix_map_name("--map=");
         for (int i = 1; i < argc; ++i) {
             std::string arg = argv[i];
             if (arg.find(prefix_truck_id) == 0) {

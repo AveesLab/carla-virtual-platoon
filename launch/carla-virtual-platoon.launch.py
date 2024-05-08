@@ -24,7 +24,7 @@ def generate_nodes(context, *, num_trucks, map_name):
             parameters=[ros_param_file],
             arguments=[
                 f'--truck_id={i-1}', 
-                f'--map_name={map_name}'
+                f'--map={map_name}'
             ]  
         )
         nodes.append(node)
@@ -45,7 +45,7 @@ def generate_launch_description():
     )
 
     declare_map_name = DeclareLaunchArgument(
-        'Maps',
+        'Map',
         default_value='IHP',
         description='MapName'
     )
