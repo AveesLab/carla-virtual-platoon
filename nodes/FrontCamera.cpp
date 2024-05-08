@@ -1,7 +1,7 @@
-#include "CarlaRGBCamera.hpp"
+#include "FrontCamera.hpp"
 
-CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
-    : Node("carla_camera_node", rclcpp::NodeOptions()
+FrontCameraPublisher::FrontCameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
+    : Node("front_camera_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
@@ -44,7 +44,7 @@ CarlaRGBCameraPublisher::CarlaRGBCameraPublisher(boost::shared_ptr<carla::client
 
 
 
-void CarlaRGBCameraPublisher::publishImage(const csd::Image &carla_image) {
+void FrontCameraPublisher::publishImage(const csd::Image &carla_image) {
     auto msg = std::make_unique<sensor_msgs::msg::Image>();
   
     // Set the header

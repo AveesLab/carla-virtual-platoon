@@ -1,7 +1,7 @@
-#include "CarlaLidar.hpp"
+#include "FrontLidar.hpp"
 
-CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
-    : Node("carla_lidar_node", rclcpp::NodeOptions()
+FrontLidarPublisher::FrontLidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
+    : Node("front_lidar_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(false)
            .automatically_declare_parameters_from_overrides(true)){
 
@@ -50,7 +50,7 @@ CarlaLidarPublisher::CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor>
 
 
 
-void CarlaLidarPublisher::publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &carla_lidar_measurement)
+void FrontLidarPublisher::publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &carla_lidar_measurement)
     {
     sensor_msgs::msg::PointCloud2 point_cloud_msg;
     point_cloud_msg.header.stamp = this->now();

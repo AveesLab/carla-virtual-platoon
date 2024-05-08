@@ -1,8 +1,9 @@
 #include "shared_carlalib.h"
 #include "CarlaLocation.hpp"
-#include "CarlaRGBCamera.hpp"
-#include "CarlaLidar.hpp"
-#include "CarlaVehicle.hpp"
+#include "FrontCamera.hpp"
+#include "FrontLidar.hpp"
+#include "TruckControl.hpp"
+#include "TruckStatus.hpp"
 #include <thread>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -83,15 +84,17 @@ void generate_truck(int truck_num, std::string map_name) {
 
 
     rclcpp::executors::MultiThreadedExecutor executor; 
-    auto node_camera = std::make_shared<CarlaRGBCameraPublisher>(actor_truck);
-    //auto node_radar = std::make_shared<CarlaRadarPublisher>(actor_truck);
-    auto node_lidar = std::make_shared<CarlaLidarPublisher>(actor_truck);
-    auto node_vehicle = std::make_shared<CarlaVehicleController>(vehicle_truck);
+    auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
+    //auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
+    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
+    auto node_control = std::make_shared<TruckControl>(vehicle_truck);
+    auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck);
 
     executor.add_node(node_camera);
     //executor.add_node(node_radar);
     executor.add_node(node_lidar);
-    executor.add_node(node_vehicle);
+    executor.add_node(node_control);
+    executor.add_node(node_status);
 
     executor.spin(); 
 

@@ -46,6 +46,6 @@
 
 /**:  
   ros__parameters: 
-    info_topic_name : "velocity_info"
+    info_topic_name : "velocity"
     steer_topic_name : "steer_control"
     velocity_topic_name : "velocity_contorl"

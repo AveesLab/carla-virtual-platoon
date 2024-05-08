@@ -3,11 +3,11 @@
 #include <rclcpp/qos.hpp>
 
 
-class CarlaLidarPublisher : public rclcpp::Node {
+class FrontLidarPublisher : public rclcpp::Node {
 
 public:
-    CarlaLidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
-    ~CarlaLidarPublisher(){
+    FrontLidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
+    ~FrontLidarPublisher(){
         lidar->Destroy();
   }
 private:

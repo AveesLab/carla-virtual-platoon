@@ -1,7 +1,7 @@
-#include "CarlaRadar.hpp"
+#include "FrontRadar.hpp"
 
-CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
-    : Node("carla_radar_publisher", rclcpp::NodeOptions()
+FrontRadarPublisher::FrontRadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
+    : Node("front_radar_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
@@ -45,7 +45,7 @@ CarlaRadarPublisher::CarlaRadarPublisher(boost::shared_ptr<carla::client::Actor>
 
 
 
-void CarlaRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement)
+void FrontRadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement)
     {
     sensor_msgs::msg::PointCloud2 radar_msg;
     radar_msg.header.stamp = this->now();

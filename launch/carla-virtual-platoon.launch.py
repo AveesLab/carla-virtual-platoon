@@ -32,7 +32,7 @@ def generate_nodes(context, *, num_trucks, map_name):
 
 def launch_setup(context):
     num_trucks = LaunchConfiguration('NumTrucks').perform(context)
-    map_name = LaunchConfiguration('MapName').perform(context)  
+    map_name = LaunchConfiguration('Map').perform(context)  
     return generate_nodes(context, num_trucks=num_trucks, map_name=map_name)
 
 

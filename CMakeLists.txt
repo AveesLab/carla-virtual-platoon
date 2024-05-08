@@ -40,11 +40,11 @@ include(dependency.cmake)
 
 add_executable(main
     src/main.cpp
-    nodes/CarlaRGBCamera.cpp
-    nodes/CarlaRadar.cpp
-    nodes/CarlaLidar.cpp
-    nodes/CarlaVehicle.cpp
-    nodes/CarlaIMU.cpp
+    nodes/FrontCamera.cpp
+    nodes/FrontRadar.cpp
+    nodes/FrontLidar.cpp
+    nodes/TruckControl.cpp
+    nodes/TruckStatus.cpp
 )
 
 

@@ -3,11 +3,11 @@
 #include <rclcpp/qos.hpp>
 
 
-class CarlaRGBCameraPublisher : public rclcpp::Node {
+class FrontCameraPublisher : public rclcpp::Node {
 
 public:
-    CarlaRGBCameraPublisher(boost::shared_ptr<carla::client::Actor> actor);
-    ~CarlaRGBCameraPublisher() {
+    FrontCameraPublisher(boost::shared_ptr<carla::client::Actor> actor);
+    ~FrontCameraPublisher() {
         camera->Destroy();
     }
 private:

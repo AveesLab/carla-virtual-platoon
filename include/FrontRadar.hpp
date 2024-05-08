@@ -2,14 +2,11 @@
 #include <boost/make_shared.hpp>
 #include <rclcpp/qos.hpp>
 
-
-
-
-class CarlaRadarPublisher : public rclcpp::Node {
+class FrontRadarPublisher : public rclcpp::Node {
 
 public:
-    CarlaRadarPublisher(boost::shared_ptr<carla::client::Actor> actor);
-    ~CarlaRadarPublisher(){
+    FrontRadarPublisher(boost::shared_ptr<carla::client::Actor> actor);
+    ~FrontRadarPublisher(){
         radar->Destroy();
   }
 private:
