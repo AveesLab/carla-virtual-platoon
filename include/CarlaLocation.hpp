@@ -2,7 +2,7 @@
 #include <array>
 
 std::map<std::string, std::map<int, std::vector<float>>> truckLocations = {
-    {"Town04", {
+    {"Town04_Opt", {
         {0, {-270.990f, 30.0f, 2.0f}},
         {1, {-300.990f, 30.0f, 2.0f}},
         {2, {-330.990f, 30.0f, 2.0f}}
@@ -23,7 +23,7 @@ std::map<std::string, std::map<int, std::vector<float>>> truckLocations = {
 };
 
 std::map<std::string, std::map<int, std::vector<float>>> truckRotations = {
-    {"Town04", {
+    {"Town04_Opt", {
         {0, {0.0f, 0.0f, 0.0f}},
         {1, {0.0f, 0.22f, 0.0f}},
         {2, {0.0f, 0.22f, 0.0f}}
