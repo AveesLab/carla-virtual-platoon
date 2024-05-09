@@ -52,14 +52,7 @@ sudo apt install --reinstall build-essential clang-8 lld-8 g++-7 cmake vim ninja
 cd
 git clone https://github.com/carla-simulator/carla
 cd ~/carla
-git checkout tags/0.9.15
-```
-```
-vi ~/carla/Util/BuildTools/Setup.sh
-```
-> Remove 94~99 lines & insert this code
-```
-wget "https://carla-releases.s3.eu-west-3.amazonaws.com/Backup/${BOOST_PACKAGE_BASENAME}.tar.gz" || true
+git checkout tags/0.9.15.2
 ```
 > Get assets
 ```
