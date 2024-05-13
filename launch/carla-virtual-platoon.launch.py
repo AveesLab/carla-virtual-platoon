@@ -1,8 +1,9 @@
 import os
 from ament_index_python.packages import get_package_share_directory
-
+import launch
+from launch_ros.actions import Node
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction,Shutdown
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration, TextSubstitution
 
@@ -25,7 +26,8 @@ def generate_nodes(context, *, num_trucks, map_name):
             arguments=[
                 f'--truck_id={i-1}', 
                 f'--map={map_name}'
-            ]  
+            ],
+            on_exit=launch.actions.Shutdown()  
         )
         nodes.append(node)
     return nodes
