@@ -14,7 +14,7 @@
 
 /**:  
   ros__parameters:
-    radar/x : 2.3
+    radar/x : 2.0
     radar/y : 0.0
     radar/z : 1.5
     radar/pitch : 0.0 
