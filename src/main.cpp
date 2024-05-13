@@ -63,9 +63,12 @@ void generate_truck(int truck_num, std::string map_name) {
     //Get a Trailer
     auto trailer = blueprint_library->Filter("trailer");
     auto blueprint_trailer = RandomChoice(*trailer, rng);
+    blueprint_trailer.SetAttribute("role_name", "trailer" + std::to_string(truck_num));
+
     // Get a Truck blueprint.
     auto truck = blueprint_library->Filter("dafxf");
     auto blueprint_truck = RandomChoice(*truck, rng);  
+    blueprint_truck.SetAttribute("role_name", "truck" + std::to_string(truck_num));
 
     carla::geom::Location TruckLocation = GetTruckLocation(truck_num,map_name);
     carla::geom::Rotation TruckRotation = GetTruckRotation(truck_num,map_name);
