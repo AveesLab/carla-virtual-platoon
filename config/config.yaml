@@ -1,6 +1,6 @@
 /**:  
   ros__parameters:
-    rgbcam/x : 2.0
+    rgbcam/x : 2.3
     rgbcam/y : 0.0
     rgbcam/z : 3.5
     rgbcam/pitch : -15.0 
@@ -14,7 +14,7 @@
 
 /**:  
   ros__parameters:
-    radar/x : 2.0
+    radar/x : 2.3
     radar/y : 0.0
     radar/z : 1.5
     radar/pitch : 0.0 

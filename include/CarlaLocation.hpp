@@ -14,7 +14,7 @@ std::map<std::string, std::map<int, std::vector<float>>> truckLocations = {
     }},
     {"k-track", {
         {0, {-75.6f,  50.75f,  2.0f}},
-        {1, {-104.6f, 50.75f, 2.0f}},
+        {1, {-100.6f, 50.75f, 2.0f}},
         {2, {-133.6f, 50.75f, 2.0f}}
     }
 
