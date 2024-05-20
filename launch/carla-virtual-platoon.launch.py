@@ -19,7 +19,7 @@ def generate_nodes(context, *, num_trucks, map_name):
         node = Node(
             package='carla-virtual-platoon',
             executable='main',
-            name=f'main{i}',
+            name=f'bridge{i-1}',
             namespace=f'truck{i-1}',
             output='screen',
             parameters=[ros_param_file],

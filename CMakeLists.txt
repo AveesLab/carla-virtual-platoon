@@ -34,7 +34,6 @@ set(ament_dependencies
   Boost
 )
 
-
 ##############################################################################################
 include(dependency.cmake)
 
@@ -47,36 +46,42 @@ add_executable(main
     nodes/TruckStatus.cpp
 )
 
-
 ##############################################################################################
-ament_target_dependencies(main ${ament_dependencies} )
+ament_target_dependencies(main ${ament_dependencies})
 
 target_include_directories(main PUBLIC
-    ${libCarla_INCLUDE_DIR}
-    ${DEP_INCLUDE_DIR}
+  ${libCarla_INCLUDE_DIR}
+  ${DEP_INCLUDE_DIR}
 )
-target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(main PUBLIC 
+  ${CMAKE_SOURCE_DIR}/include
+)
 
 target_link_directories(main PUBLIC
-    ${libCarla_LIB_DIR}
+  ${libCarla_LIB_DIR}
 )
 
-target_link_libraries(main ${libCarla_LIBS} ${Boost_LIBRARIES} ${TIFF_LIBRARIES} jpeg png
+target_link_libraries(main 
+  ${libCarla_LIBS} 
+  ${Boost_LIBRARIES} 
+  ${TIFF_LIBRARIES} 
+  jpeg png
 )
 ##############################################################################################
 
 install(TARGETS
-main 
-DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY
-	launch
-	DESTINATION share/${PROJECT_NAME}
+  main
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY
-	config
-	DESTINATION share/${PROJECT_NAME}
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+  config
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(
