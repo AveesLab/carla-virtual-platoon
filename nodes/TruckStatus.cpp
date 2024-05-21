@@ -13,7 +13,8 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
     ShutdownSubscriber = this->create_subscription<std_msgs::msg::String>("/shutdown_topic", 10, std::bind(&TruckStatusPublisher::shutdown_callback, this, std::placeholders::_1));
     DistanceSubscriber_ = this->create_subscription<std_msgs::msg::Float32>("min_distance", 10, std::bind(&TruckStatusPublisher::DistanceSubCallback, this, std::placeholders::_1));
 
-    timer_10ms_record = this->create_wall_timer(10ms, std::bind(&TruckStatusPublisher::TruckStatus_record_callback, this));
+    gettimeofday(&init_, NULL);
+    timer_100ms_record = this->create_wall_timer(100ms, std::bind(&TruckStatusPublisher::TruckStatus_record_callback, this));
 }
 
 void TruckStatusPublisher::TruckStatusPublisher_accel_callback() {
@@ -47,7 +48,6 @@ void TruckStatusPublisher::shutdown_callback(const std_msgs::msg::String::Shared
 }
 
 void TruckStatusPublisher::TruckStatus_record_callback() {
-    gettimeofday(&init_, NULL);
     if(velocity_ != 0.) recordData(init_);
 }
 
@@ -58,6 +58,7 @@ void TruckStatusPublisher::recordData(struct timeval startTime){
     char buf[256] = {0x00,};
     static bool flag = false;
     double diff_time;
+    log_path_ = "/home/avees/ros2_ws/logfiles/";
     std::ifstream read_file;
     std::ofstream write_file;
     if(!flag){

@@ -33,7 +33,7 @@ private:
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr ShutdownSubscriber;
 
     void DistanceSubCallback(const std_msgs::msg::Float32::SharedPtr msg);
-    rclcpp::TimerBase::SharedPtr timer_10ms_record;
+    rclcpp::TimerBase::SharedPtr timer_100ms_record;
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr DistanceSubscriber_;
     void TruckStatus_record_callback();
     void recordData(struct timeval startTime);
