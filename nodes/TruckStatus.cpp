@@ -23,7 +23,7 @@ void TruckStatusPublisher::TruckStatusPublisher_accel_callback() {
     message.data.push_back(acc_.x);
     message.data.push_back(acc_.y);
     message.data.push_back(acc_.z);
-    float result_acc = std::sqrt(std::pow(acc_.x,2)  + std::pow(acc_.y,2) + std::pow(acc_.z,2)); // m/s
+    float result_acc = acc_.x; // m/s
     acceleration_ = result_acc;
     AccelPublisher_->publish(message);
 }
@@ -58,7 +58,7 @@ void TruckStatusPublisher::recordData(struct timeval startTime){
     char buf[256] = {0x00,};
     static bool flag = false;
     double diff_time;
-    log_path_ = "/home/avees/ros2_ws/logfiles/";
+    log_path_ = "/home/nvidia/platoon_ws/logfiles/";
     std::ifstream read_file;
     std::ofstream write_file;
     if(!flag){
