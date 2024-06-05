@@ -10,6 +10,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 add_compile_options(-Wall -Wextra -Wl,-Bstatic -lrpc -lboost_filesystem -Wl,-Bdynamic -lpng -ltiff -ljpeg -lRecast -lDetour -lDetourCrowd)
 endif()
 
+if(NOT DEFINED ENV{CARLA_ROOT})
+  message(FATAL_ERROR "Environment variable CARLA_ROOT is not set. Please set CARLA_ROOT to the root directory of your CARLA installation.")
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -85,7 +89,7 @@ install(DIRECTORY
 )
 
 install(
-  DIRECTORY libcarla-install/lib/
+  DIRECTORY ${libCarla_LIB_DIR}
   DESTINATION lib
 )
 
