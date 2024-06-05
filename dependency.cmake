@@ -1,9 +1,4 @@
 set(libCarla_INSTALL_DIR $ENV{CARLA_ROOT}/PythonAPI/carla/dependencies)
-
-if(NOT DEFINED libCarla_INSTALL_DIR)
-  message(FATAL_ERROR "Dependencies is not set. Please check carla/PythonAPI/carla/dependencies is there.")
-endif()
-
 set(libCarla_INCLUDE_DIR ${libCarla_INSTALL_DIR}/include)
 set(libCarla_LIB_DIR ${libCarla_INSTALL_DIR}/lib)
 set(libCarla_LIBS 
