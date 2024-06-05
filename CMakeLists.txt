@@ -61,10 +61,6 @@ target_include_directories(main PUBLIC
   ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_directories(main PUBLIC
-  ${libCarla_LIB_DIR}
-)
-
 target_link_libraries(main 
   ${libCarla_LIBS} 
   ${Boost_LIBRARIES} 
@@ -86,11 +82,6 @@ install(DIRECTORY
 install(DIRECTORY
   config
   DESTINATION share/${PROJECT_NAME}
-)
-
-install(
-  DIRECTORY ${libCarla_LIB_DIR}
-  DESTINATION lib
 )
 
 ament_package()
