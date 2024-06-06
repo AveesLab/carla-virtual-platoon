@@ -174,6 +174,10 @@ vi ~/.bashrc
 export CARLA_ROOT=~/carla
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CARLA_ROOT/PythonAPI/carla/dependencies/lib
 ```
+> Source bash configuration
+```
+source ./bashrc
+```
 > Packages build
 ```
 cd ~/ros2_ws
