@@ -8,7 +8,7 @@ Dependencies for Ubuntu 18.04 and previous versions are listed separately below.
 - **Enough memory space (add swap area).** For better performance, using large (> 16 GB) memory is recommended. Setting swap area is also possible to prevent memory insufficiency.
 - **An adequate GPU.** CARLA aims for realistic simulations, so the server needs at least a 6 GB GPU although 8 GB is recommended. A dedicated GPU is highly recommended for machine learning.
 - **Two TCP ports and good internet connection.** 2000 and 2001 by default. Make sure that these ports are not blocked by firewalls or any other applications.
-- Python 3.8 ++
+- **Python 3.8 ++**
 
 # 1. Install Dependency
 ```
@@ -125,77 +125,77 @@ python manual_controlSemiTrailer.py
     ```
 
 # 6. Install ROS 2 (Galactic)
-> Set locale
-```
-locale  # check for UTF-8
+- Set locale
+    ```
+    locale  # check for UTF-8
 
-sudo apt update && sudo apt install locales
-sudo locale-gen en_US en_US.UTF-8
-sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-export LANG=en_US.UTF-8
+    sudo apt update && sudo apt install locales
+    sudo locale-gen en_US en_US.UTF-8
+    sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+    export LANG=en_US.UTF-8
 
-locale  # verify settings
-```
-> Setup sources
-```
-sudo apt install software-properties-common
-sudo add-apt-repository universe
-```
-```
-sudo apt update && sudo apt install curl
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-```
-```
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-```
-> Install ROS 2 packages
-```
-sudo apt update
-sudo apt upgrade
-sudo apt install ros-galactic-desktop
-```
-> Colcon install
-```
-sudo apt install python3-colcon-common-extensions
-```
+    locale  # verify settings
+    ```
+- Setup sources
+    ```
+    sudo apt install software-properties-common
+    sudo add-apt-repository universe
+    ```
+    ```
+    sudo apt update && sudo apt install curl
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+    ```
+    ```
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    ```
+- Install ROS 2 packages
+    ```
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install ros-galactic-desktop
+    ```
+- Colcon install
+    ```
+    sudo apt install python3-colcon-common-extensions
+    ```
 
 # 7. Install & Run bridge
-> Create carla library
-```
-cd ~/carla
-make setup
-make LibCarla
-```
-> Create ROS2 workspace
-```
-source /opt/ros/galactic/setup.bash
-mkdir -p ~/ros2_ws/src
-```
-> Install packages
-```
-cd ~/ros2_ws/src
-git clone https://github.com/AveesLab/carla-virtual-platoon.git
-```
-> Set environmental variable
-```
-vi ~/.bashrc
-```
-> Insert this code in last line
-```
-export CARLA_ROOT=~/carla
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CARLA_ROOT/PythonAPI/carla/dependencies/lib
-```
-> Source bash configuration
-```
-source ./bashrc
-```
-> Packages build
-```
-cd ~/ros2_ws
-source /opt/ros/galactic/setup.bash
-colcon build --symlink-install
-source ./install/setup.bash
-```
+- Create carla library
+    ```
+    cd ~/carla
+    make setup
+    make LibCarla
+    ```
+- Create ROS2 workspace
+    ```
+    source /opt/ros/galactic/setup.bash
+    mkdir -p ~/ros2_ws/src
+    ```
+- Install packages
+    ```
+    cd ~/ros2_ws/src
+    git clone https://github.com/AveesLab/carla-virtual-platoon.git
+    ```
+- Set environmental variable
+    ```
+    vi ~/.bashrc
+    ```
+- Insert this code in last line
+    ```
+    export CARLA_ROOT=~/carla
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CARLA_ROOT/PythonAPI/carla/dependencies/lib
+    ```
+- Source bash configuration
+    ```
+    source ./bashrc
+    ```
+- Packages build
+    ```
+    cd ~/ros2_ws
+    source /opt/ros/galactic/setup.bash
+    colcon build --symlink-install
+    source ./install/setup.bash
+    ```
 
 # 8. Run
 -  Carla launch
