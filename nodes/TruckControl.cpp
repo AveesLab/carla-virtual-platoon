@@ -6,13 +6,14 @@ TruckControl::TruckControl(boost::shared_ptr<carla::client::Vehicle> vehicle_)
            .automatically_declare_parameters_from_overrides(true)),Vehicle_(vehicle_) {
     
     this->get_parameter_or("steer_topic_name",steer_topic_name,std::string("steer"));
-    this->get_parameter_or("velocity_topic_name",velocity_topic_name,std::string("velocity"));
+    this->get_parameter_or("throttle_topic_name",throttle_topic_name,std::string("throttle"));
+    this->get_parameter_or("initial_hand_brake",initial_hand_brake,true);
 
 
     SteerSubscriber_ = this->create_subscription<std_msgs::msg::Float32>(steer_topic_name, 1, std::bind(&TruckControl::SteerSubCallback, this, std::placeholders::_1));
-    VelocitySubscriber_ = this->create_subscription<std_msgs::msg::Float32>(velocity_topic_name, 1, std::bind(&TruckControl::VelocitySubCallback, this, std::placeholders::_1));
+    ThrottleSubscriber_ = this->create_subscription<std_msgs::msg::Float32>(throttle_topic_name, 1, std::bind(&TruckControl::ThrottleSubCallback, this, std::placeholders::_1));
 
-    this->control.hand_brake = true;
+    this->control.hand_brake = initial_hand_brake;
     Vehicle_->ApplyControl(control);
 }
 
@@ -25,7 +26,7 @@ void TruckControl::SteerSubCallback(const std_msgs::msg::Float32::SharedPtr msg)
     Vehicle_->ApplyControl(control);
 }
 
-void TruckControl::VelocitySubCallback(const std_msgs::msg::Float32::SharedPtr msg) {
+void TruckControl::ThrottleSubCallback(const std_msgs::msg::Float32::SharedPtr msg) {
     float control_value = msg->data;
     if (this->control.hand_brake == true ) {
         if (control_value > 0.5) this->control.hand_brake = false;

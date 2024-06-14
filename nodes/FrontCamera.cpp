@@ -64,7 +64,7 @@ void FrontCameraPublisher::publishImage(const csd::Image &carla_image) {
 
     // Copy image data
     const auto* raw_data = reinterpret_cast<const uint8_t*>(carla_image.data());
-    for (int i = 0; i < msg->height * msg->width; ++i) {
+    for (int i = 0; i < static_cast<int>(msg->height * msg->width); ++i) {
         // Skip alpha channel by offsetting the raw data index
         int raw_index = i * 4; // 4 bytes per pixel (BGRA)
         int msg_index = i * 3; // 3 bytes per pixel (RGB)
