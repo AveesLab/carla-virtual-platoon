@@ -197,24 +197,22 @@ source ./install/setup.bash
 ```
 
 # 8. Run
-> Carla launch
-```
-cd ~/carla
-make launch
-```
+-  Carla launch
+    ```
+    cd ~/carla
+    make launch
+    ```
 
-> Run Server
-![seame(1)](https://github.com/AveesLab/carla-virtual-platoon/assets/83895074/75f873b0-613b-4718-a1cb-8747b4c604a7)
+- Run Server
+    ![seame(1)](https://github.com/AveesLab/carla-virtual-platoon/assets/83895074/75f873b0-613b-4718-a1cb-8747b4c604a7)
 
-> Run ros2 launch
-```
-source ~/ros2_ws/instal/setup.bash
-ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=Town04_Opt
+- Run ros2 launch
+    ```
+    source ~/ros2_ws/install/setup.bash
 
-or
-
-ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=k-track
-```
+    # Map = {k-track, Town04_Opt, IHP}
+    ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=k-track
+    ```
 
 # 9. ROS2
 ### Sensor related parameters
