@@ -1,4 +1,4 @@
-set(libCarla_INSTALL_DIR ${CMAKE_SOURCE_DIR}/libcarla-install)
+set(libCarla_INSTALL_DIR $ENV{CARLA_ROOT}/PythonAPI/carla/dependencies)
 set(libCarla_INCLUDE_DIR ${libCarla_INSTALL_DIR}/include)
 set(libCarla_LIB_DIR ${libCarla_INSTALL_DIR}/lib)
 set(libCarla_LIBS 

@@ -165,13 +165,18 @@ mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/AveesLab/carla-virtual-platoon.git
 ```
-> Set build dependency
+> Set environmental variable
 ```
-cd ~/carla/PythonAPI/carla
-cp ./dependencies ~/ros2_ws/src/carla-virtual-platoon
-
-cd ~/ros2_ws/src/carla-virtual-platoon
-mv dependencies libcarla-install
+vi ~/.bashrc
+```
+> Insert this code in last line
+```
+export CARLA_ROOT=~/carla
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CARLA_ROOT/PythonAPI/carla/dependencies/lib
+```
+> Source bash configuration
+```
+source ./bashrc
 ```
 > Packages build
 ```
