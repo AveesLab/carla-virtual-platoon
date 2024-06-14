@@ -1,0 +1,23 @@
+[0.014s] Invoking command in '/home/mczb/carla-virtual-platoon/build/carla-virtual-platoon': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/mczb/carla-virtual-platoon -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/mczb/carla-virtual-platoon/install/carla-virtual-platoon
+[0.075s] -- The C compiler identification is GNU 9.4.0
+[0.117s] -- The CXX compiler identification is GNU 9.4.0
+[0.121s] -- Check for working C compiler: /usr/bin/cc
+[0.182s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.183s] -- Detecting C compiler ABI info
+[0.243s] -- Detecting C compiler ABI info - done
+[0.252s] -- Detecting C compile features
+[0.252s] -- Detecting C compile features - done
+[0.254s] -- Check for working CXX compiler: /usr/bin/c++
+[0.321s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.321s] -- Detecting CXX compiler ABI info
+[0.392s] -- Detecting CXX compiler ABI info - done
+[0.401s] -- Detecting CXX compile features
+[0.402s] -- Detecting CXX compile features - done
+[0.402s] CMake Error at CMakeLists.txt:14 (message):
+[0.402s]   Environment variable CARLA_ROOT is not set.  Please set CARLA_ROOT to the
+[0.403s]   root directory of your CARLA installation.
+[0.403s] 
+[0.403s] 
+[0.403s] -- Configuring incomplete, errors occurred!
+[0.403s] See also "/home/mczb/carla-virtual-platoon/build/carla-virtual-platoon/CMakeFiles/CMakeOutput.log".
+[0.405s] Invoked command in '/home/mczb/carla-virtual-platoon/build/carla-virtual-platoon' returned '1': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/mczb/carla-virtual-platoon -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/mczb/carla-virtual-platoon/install/carla-virtual-platoon

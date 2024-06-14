@@ -1,0 +1,5 @@
+CMake Error at CMakeLists.txt:14 (message):
+  Environment variable CARLA_ROOT is not set.  Please set CARLA_ROOT to the
+  root directory of your CARLA installation.
+
+
