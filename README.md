@@ -60,7 +60,7 @@ pip3 install --user wheel auditwheel
     git checkout tags/0.9.15.2
     ```
 - Get assets
-    Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
+    Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in **CONTENT_LINK**
     ```
     ./Update.sh
     ```
@@ -82,7 +82,7 @@ pip3 install --user wheel auditwheel
     make PythonAPI
     make launch
     ```
-- We recommend to wait for shader compile after "make launch" to prevent lack of memory in futher steps
+- We recommend to wait for shader compile after `make launch` to prevent lack of memory in futher steps
 
 # 4. Import Truck & Trailer models
 - Install vehicle models 
@@ -112,16 +112,16 @@ python manual_controlSemiTrailer.py
 ```
 
 # 5. Import K-track Map
-> 0. Download 'map_package' file 
-> 1. Copy the file in **~/carla/Import** directory
-> 2. In **~/carla** 
-```
-make import
-```
-> 3. After then,
-```
-make launch
-```
+- Download files in **carla-virtual-platoon/map_package**
+- Copy the files (`k-track.fbx`, `k-track.xodr`) to **~/carla/Import** directory
+- In **~/carla** 
+    ```
+    make import
+    ```
+- After then,
+    ```
+    make launch
+    ```
 
 # 6. Install ROS 2 (Galactic)
 > Set locale
