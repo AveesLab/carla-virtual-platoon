@@ -58,24 +58,29 @@ cd ~/carla
 git checkout tags/0.9.15.2
 ```
 > Get assets
+Refer this [issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
 ```
 ./Update.sh
 ```
 > Set Unreal Engine Environment Variables
 ```
-sudo vi ~/.bashrc
+vi ~/.bashrc
 ```
 > Insert this code in last line
 ```
 export UE4_ROOT=~/UnrealEngine_4.26
 ```
-> Reboot Terminal
+> Source Environment Variables
+```
+source ~/.bashrc
+```
 > Build carla
 ```
 cd ~/carla
 make PythonAPI
 make launch
 ```
+> We recommend to wait for shader compile after "make launch" to prevent lack of memory in futher steps
 
 # 4. Import Truck & Trailer models
 - Install vehicle models 
