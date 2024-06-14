@@ -90,18 +90,17 @@ pip3 install --user wheel auditwheel
     ```
     git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
     ```
-> 0. Merge **PythonAPI** & **Unreal** in carla directory
-> 1. In ```Content/Carla/Blueprint/Vehicle```, open the ```VehicleFactory``` file.
-> 2. In the **Generate Definitions** tab, double click **Vehicles**.
-> 3. In the **Details panel**, expand the **Default Value** section and add a new element to the vehicles array.
-> 4. Fill in the **Make** and **Model** of your vehicle. For the truck name the **Make**: "DAFxf". And for the trailer name the **Make**: "trailer".
-> 5. Fill in the **Class** value with your ```BP_<vehicle_name>``` file.
-> 6. Optionally, provide a set of recommended colors for the vehicle. Name the "model" an "make" as below in the picture
-
+0. Merge **PythonAPI** & **Unreal** in carla directory
+1. In ```Content/Carla/Blueprint/Vehicle```, open the ```VehicleFactory``` file.
+2. In the **Generate Definitions** tab, double click **Vehicles**.
+3. In the **Details panel**, expand the **Default Value** section and add a new element to the vehicles array.
+4. Fill in the **Make** and **Model** of your vehicle. For the truck name the **Make**: "DAFxf". And for the trailer name the **Make**: "trailer".
+5. Fill in the **Class** value with your ```BP_<vehicle_name>``` file.
+6. Optionally, provide a set of recommended colors for the vehicle. Name the "model" an "make" as below in the picture
 ![image](https://github.com/AveesLab/scale_truck_control_carla/assets/117966644/6f08583c-eff5-4734-87f6-a0dc88671be0)
 
 
-> 7. Compile and save.
+7. Compile and save.
 ![image](https://github.com/AveesLab/scale_truck_control_carla/assets/117966644/ed9bc67b-2432-4cfa-ade1-21297d185d00)
 
 
