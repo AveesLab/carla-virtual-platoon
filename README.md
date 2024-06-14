@@ -11,7 +11,10 @@ Dependencies for Ubuntu 18.04 and previous versions are listed separately below.
 
 # 1. Install Dependency
 ```
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 sudo apt-add-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal main"
+```
+```
 sudo apt-get update
 sudo apt-get install build-essential clang-10 lld-10 g++-7 cmake ninja-build libvulkan1 python python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf libtool rsync libxml2-dev git
 sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/lib/llvm-10/bin/clang++ 180 &&
