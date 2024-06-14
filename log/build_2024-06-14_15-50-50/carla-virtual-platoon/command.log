@@ -1,2 +1,0 @@
-Invoking command in '/home/mczb/carla-virtual-platoon/build/carla-virtual-platoon': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/mczb/carla-virtual-platoon -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/mczb/carla-virtual-platoon/install/carla-virtual-platoon
-Invoked command in '/home/mczb/carla-virtual-platoon/build/carla-virtual-platoon' returned '1': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/mczb/carla-virtual-platoon -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/mczb/carla-virtual-platoon/install/carla-virtual-platoon
