@@ -30,57 +30,59 @@ pip3 install --user wheel auditwheel
 ```
 
 # 2. Install Unreal Engine 4.26
-> Clone the content for CARLA's fork of Unreal Engine 4.26 to your local computer:
-```
-git clone --depth 1 -b carla https://github.com/CarlaUnreal/UnrealEngine.git ~/UnrealEngine_4.26
-```
-> Navigate into the directory where you cloned the repository:
-```
-cd ~/UnrealEngine_4.26
-```
-> Make the build. This may take an hour or two depending on your system.
-```
-./Setup.sh && ./GenerateProjectFiles.sh && make
-```
-> Open the Editor to check that Unreal Engine has been installed properly.
-```
-cd ~/UnrealEngine_4.26/Engine/Binaries/Linux && ./UE4Editor
-```
+-  Clone the content for CARLA's fork of Unreal Engine 4.26 to your local computer:
+    ```
+    git clone --depth 1 -b carla https://github.com/CarlaUnreal/UnrealEngine.git ~/UnrealEngine_4.26
+    ```
+- Navigate into the directory where you cloned the repository:
+    ```
+    cd ~/UnrealEngine_4.26
+    ```
+- Make the build. This may take an hour or two depending on your system.
+    ```
+    ./Setup.sh && ./GenerateProjectFiles.sh && make
+    ```
+- Open the Editor to check that Unreal Engine has been installed properly.
+    ```
+    cd ~/UnrealEngine_4.26/Engine/Binaries/Linux && ./UE4Editor
+    ```
 
 # 3. Install Carla 0.9.15
-```
-sudo apt install --reinstall build-essential clang-8 lld-8 g++-7 cmake vim ninja-build libvulkan1 python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf wget libtool rsync libxml2-dev
-```
-```
-cd
-git clone https://github.com/carla-simulator/carla
-cd ~/carla
-git checkout tags/0.9.15.2
-```
-> Get assets
-```
-./Update.sh
-```
-Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
-> Set Unreal Engine Environment Variables
-```
-vi ~/.bashrc
-```
-> Insert this code in last line
-```
-export UE4_ROOT=~/UnrealEngine_4.26
-```
-> Source Environment Variables
-```
-source ~/.bashrc
-```
-> Build carla
-```
-cd ~/carla
-make PythonAPI
-make launch
-```
-> We recommend to wait for shader compile after "make launch" to prevent lack of memory in futher steps
+- Install Dependency
+    ```
+    sudo apt install --reinstall build-essential clang-8 lld-8 g++-7 cmake vim ninja-build libvulkan1 python-dev python3-dev python3-pip libpng-dev libtiff5-dev libjpeg-dev tzdata sed curl unzip autoconf wget libtool rsync libxml2-dev
+    ```
+- Clone Calra Simulator
+    ```
+    cd
+    git clone https://github.com/carla-simulator/carla
+    cd ~/carla
+    git checkout tags/0.9.15.2
+    ```
+- Get assets
+    Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
+    ```
+    ./Update.sh
+    ```
+- Set Unreal Engine Environment Variables
+    ```
+    vi ~/.bashrc
+    ```
+- Insert this code in last line
+    ```
+    export UE4_ROOT=~/UnrealEngine_4.26
+    ```
+- Source Environment Variables
+    ```
+    source ~/.bashrc
+    ```
+- Build carla
+    ```
+    cd ~/carla
+    make PythonAPI
+    make launch
+    ```
+- We recommend to wait for shader compile after "make launch" to prevent lack of memory in futher steps
 
 # 4. Import Truck & Trailer models
 - Install vehicle models 
