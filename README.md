@@ -86,10 +86,10 @@ pip3 install --user wheel auditwheel
 - We recommend to wait for shader compile after `make launch` to prevent lack of memory in futher steps
 
 # 4. Import Truck & Trailer models
-- Install vehicle models 
-```
-git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
-```
+- Install vehicle models
+    ```
+    git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
+    ```
 > 0. Merge **PythonAPI** & **Unreal** in carla directory
 > 1. In ```Content/Carla/Blueprint/Vehicle```, open the ```VehicleFactory``` file.
 > 2. In the **Generate Definitions** tab, double click **Vehicles**.
@@ -102,15 +102,14 @@ git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
 
 
 > 7. Compile and save.
-
 ![image](https://github.com/AveesLab/scale_truck_control_carla/assets/117966644/ed9bc67b-2432-4cfa-ade1-21297d185d00)
 
 
 - Test the vehicle
-> Launch CARLA, open a terminal in ```PythonAPI/examples``` and run the following command:
-```
-python manual_controlSemiTrailer.py
-```
+     Launch CARLA, open a terminal in ```PythonAPI/examples``` and run the following command:
+    ```
+    python manual_controlSemiTrailer.py
+    ```
 
 # 5. Import K-track Map
 - Download files in **carla-virtual-platoon/map_package**
