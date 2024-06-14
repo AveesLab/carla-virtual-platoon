@@ -187,7 +187,7 @@ python manual_controlSemiTrailer.py
     ```
 - Source bash configuration
     ```
-    source ./bashrc
+    source ~/.bashrc
     ```
 - Packages build
     ```
