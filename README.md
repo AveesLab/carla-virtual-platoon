@@ -10,6 +10,8 @@ Dependencies for Ubuntu 18.04 and previous versions are listed separately below.
 - **Two TCP ports and good internet connection.** 2000 and 2001 by default. Make sure that these ports are not blocked by firewalls or any other applications.
 - **Python 3.8 ++**
 
+### Before installation, read the [Reference](#10-reference) is highly recommended.
+
 # 1. Install Dependency
 ```
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
@@ -241,3 +243,6 @@ You can change the names and parameters of the sensors(camera,lidar,etc) inside 
 
     Subscribes to control values for velocity. If the value is greater than zero, it controls the throttle; if it's less than zero, it applies the brake.
 
+# 10. Reference
+- Carla [Linux Build](https://carla.readthedocs.io/en/0.9.15/build_linux/) Official Documentation
+- ROS2 Installation ([Galactic](https://docs.ros.org/en/galactic/Installation.html), [Foxy](https://docs.ros.org/en/foxy/Installation.html)) Documentation
