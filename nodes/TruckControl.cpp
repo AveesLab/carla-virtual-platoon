@@ -28,8 +28,6 @@ void TruckControl::SteerSubCallback(const std_msgs::msg::Float32::SharedPtr msg)
 
 void TruckControl::ThrottleSubCallback(const std_msgs::msg::Float32::SharedPtr msg) {
     float control_value = msg->data;
-    // Release Hand Bake Initially
-    this->control.hand_brake = false;
     if (this->control.hand_brake == true ) {
         if (control_value > 0.5) this->control.hand_brake = false;
     }
