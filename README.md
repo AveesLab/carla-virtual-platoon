@@ -58,7 +58,7 @@ cd ~/carla
 git checkout tags/0.9.15.2
 ```
 > Get assets
-Refer this [issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
+> Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in CONTENT_LINK
 ```
 ./Update.sh
 ```
