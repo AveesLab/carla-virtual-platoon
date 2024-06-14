@@ -10,7 +10,7 @@ Dependencies for Ubuntu 18.04 and previous versions are listed separately below.
 - **Two TCP ports and good internet connection.** 2000 and 2001 by default. Make sure that these ports are not blocked by firewalls or any other applications.
 - **Python 3.8 ++**
 
-### Before installation, read the [Reference](#10-reference) is highly recommended.
+### Before installation, read [Reference](#10-reference) below is highly recommended.
 
 # 1. Install Dependency
 ```
