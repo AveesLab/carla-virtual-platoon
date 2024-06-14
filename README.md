@@ -239,9 +239,9 @@ You can change the names and parameters of the sensors(camera,lidar,etc) inside 
 
     Subscribes to steering control values (in degrees).
 
-* **`/truck{n}/velocity_control`** ([std_msgs/msg/Float32])
+* **`/truck{n}/throttle_control`** ([std_msgs/msg/Float32])
 
-    Subscribes to control values for velocity. If the value is greater than zero, it controls the throttle; if it's less than zero, it applies the brake.
+    Subscribes to control values for throttle. If the value is greater than zero, it controls the throttle; if it's less than zero, it applies the brake.
 
 # 10. Reference
 - Carla [Linux Build](https://carla.readthedocs.io/en/0.9.15/build_linux/) Official Documentation
