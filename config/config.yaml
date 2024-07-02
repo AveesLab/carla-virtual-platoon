@@ -20,11 +20,11 @@
     radar/pitch : 0.0 
     radar/yaw : 0.0
     radar/roll : 0.0
-    radar/sensor_tick : "0.1f"
+    radar/sensor_tick : "0.000001f"
     radar/horizontal_fov : "40.0f"
-    radar/vertical_fov : "30.0f"
-    radar/points_per_second : "8000"
-    radar/range : "300.0f"
+    radar/vertical_fov : "4.4f"
+    radar/points_per_second : "50000"
+    radar/range : "60.0f"
     radar_topic_name: "front_radar"
 
 /**:  
