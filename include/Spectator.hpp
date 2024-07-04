@@ -3,11 +3,11 @@
 #include <rclcpp/qos.hpp>
 #include <std_msgs/msg/bool.hpp>
 
-class FrontCameraPublisher : public rclcpp::Node {
+class Spectator : public rclcpp::Node {
 
 public:
-    FrontCameraPublisher(boost::shared_ptr<carla::client::Actor> actor);
-    ~FrontCameraPublisher() {
+    Spectator(boost::shared_ptr<carla::client::Actor> actor);
+    ~Spectator() {
         camera->Destroy();
     }
 private:

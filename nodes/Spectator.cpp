@@ -1,50 +1,50 @@
-#include "FrontCamera.hpp"
+#include "Spectator.hpp"
 
-FrontCameraPublisher::FrontCameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
-    : Node("front_camera_node", rclcpp::NodeOptions()
+Spectator::Spectator(boost::shared_ptr<carla::client::Actor> actor)
+    : Node("Spectator", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
     actor_ = actor;
-    this->get_parameter_or("rgbcam/x",rgbcam_x,2.0f);
-    this->get_parameter_or("rgbcam/y",rgbcam_y,0.0f);
-    this->get_parameter_or("rgbcam/z",rgbcam_z,3.5f);
-    this->get_parameter_or("rgbcam/pitch",rgbcam_pitch, -15.0f);
-    this->get_parameter_or("rgbcam/yaw",rgbcam_yaw,0.0f);
-    this->get_parameter_or("rgbcam/roll",rgbcam_roll,0.0f);
-    this->get_parameter_or("rgbcam/sensor_tick",rgbcam_sensor_tick,std::string("0.033333f"));
-    this->get_parameter_or("rgbcam/image_size_x",rgbcam_image_size_x,std::string("640"));
-    this->get_parameter_or("rgbcam/image_size_y",rgbcam_image_size_y,std::string("480"));
-    this->get_parameter_or("rgbcam/fov",rgbcam_fov,std::string("90.0f"));
-    this->get_parameter_or("rgbcam_topic_name",rgbcam_topic_name,std::string("carla/image_raw"));
+    this->get_parameter_or("rgbcam/sx",rgbcam_x,-5.0f);
+    this->get_parameter_or("rgbcam/sy",rgbcam_y,30.0f);
+    this->get_parameter_or("rgbcam/sz",rgbcam_z,55.0f);
+    this->get_parameter_or("rgbcam/spitch",rgbcam_pitch, -45.0f);
+    this->get_parameter_or("rgbcam/syaw",rgbcam_yaw,-90.0f);
+    this->get_parameter_or("rgbcam/sroll",rgbcam_roll,0.0f);
+    this->get_parameter_or("rgbcam/ssensor_tick",rgbcam_sensor_tick,std::string("0.033f"));
+    this->get_parameter_or("srgbcam_topic_name",rgbcam_topic_name,std::string("LV/carla/camasdasdera"));
     tmp = 1;
   
     publisher_ = this->create_publisher<sensor_msgs::msg::Image>(rgbcam_topic_name, custom_qos);
-    Att_subscriber_ = this->create_subscription<std_msgs::msg::Bool>(rgbcam_topic_name+"/attribute" , 10 ,std::bind(&FrontCameraPublisher::AttSubCallback, this, std::placeholders::_1));
+    Att_subscriber_ = this->create_subscription<std_msgs::msg::Bool>("/attribute" , 10 ,std::bind(&Spectator::AttSubCallback, this, std::placeholders::_1));
     
     camera_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.camera.rgb")));
     assert(camera_bp != nullptr);
-    camera_bp->SetAttribute("sensor_tick", rgbcam_sensor_tick);
-    camera_bp->SetAttribute("image_size_x","640");
-    camera_bp->SetAttribute("image_size_y","480");
-    camera_bp->SetAttribute("fov", "90.0f");
-    camera_bp->SetAttribute("lens_flare_intensity", "0.0f");
-    camera_transform = cg::Transform{ cg::Location{rgbcam_x, rgbcam_y, rgbcam_z}, cg::Rotation{rgbcam_pitch, rgbcam_yaw, rgbcam_roll}}; // pitch, yaw, roll.
+    camera_bp->SetAttribute("sensor_tick", "0.0f");
+    camera_bp->SetAttribute("image_size_x","1280");
+    camera_bp->SetAttribute("image_size_y","600");
+    camera_bp->SetAttribute("fov", "90.0");
+    //camera_bp->SetAttribute("enable_postprocess_effects","false");
+
+    camera_transform = cg::Transform{
+    cg::Location{rgbcam_x, rgbcam_y, rgbcam_z},   // x, y, z.
+    cg::Rotation{rgbcam_pitch, rgbcam_yaw, rgbcam_roll}}; // pitch, yaw, roll.
     cam_actor = world->SpawnActor(*camera_bp, camera_transform, actor.get());
     camera = boost::static_pointer_cast<cc::Sensor>(cam_actor);
 
     camera->Listen([this](auto data) {
-        auto image = boost::static_pointer_cast<csd::Image>(data);
-        assert(image != nullptr);
-        publishImage(*image);
-    });
+    auto image = boost::static_pointer_cast<csd::Image>(data);
+    assert(image != nullptr);
+    publishImage(*image);
+  });
 }
 
 
 
-void FrontCameraPublisher::AttSubCallback(const std_msgs::msg::Bool::SharedPtr msg) {
+void Spectator::AttSubCallback(const std_msgs::msg::Bool::SharedPtr msg) {
     if(msg->data == true && tmp == 1) {
         camera->Stop();
         std::cerr << "sub" << std::endl;
@@ -89,12 +89,11 @@ void FrontCameraPublisher::AttSubCallback(const std_msgs::msg::Bool::SharedPtr m
     }
 }
 
-void FrontCameraPublisher::publishImage(const csd::Image &carla_image) {
+void Spectator::publishImage(const csd::Image &carla_image) {
     auto msg = std::make_unique<sensor_msgs::msg::Image>();
-  
+
     // Set the header
-     msg->header.stamp = this->now();
-   
+    msg->header.stamp = this->now();
     msg->header.frame_id = "1"; // Set appropriate frame ID
 
     // Set image properties
@@ -117,8 +116,17 @@ void FrontCameraPublisher::publishImage(const csd::Image &carla_image) {
         msg->data[msg_index + 1] = raw_data[raw_index + 1]; // Green
         msg->data[msg_index + 2] = raw_data[raw_index];     // Blue
     }
+    
+    // 여기서부터 이미지 표시를 위한 코드
+    // 이미지 데이터를 cv::Mat 객체로 변환
+    cv::Mat cv_image(msg->height, msg->width, CV_8UC3, msg->data.data());
+  cv::Mat cv_image_bgr;
+    cv::cvtColor(cv_image, cv_image_bgr, cv::COLOR_RGB2BGR);
+    // 이미지 표시
+    cv::imshow("CARLA RGB Image", cv_image_bgr);
+    cv::waitKey(1); // OpenCV 이벤트 처리 대기, 1ms 동안 대기
 
     // Publish the message
-    publisher_->publish(*msg);
+    //publisher_->publish(*msg);
 }
 

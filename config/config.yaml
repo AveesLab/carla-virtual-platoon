@@ -3,7 +3,7 @@
     rgbcam/x : 2.3
     rgbcam/y : 0.0
     rgbcam/z : 3.5
-    rgbcam/pitch : -45.0 
+    rgbcam/pitch : -15.0 
     rgbcam/yaw : 0.0
     rgbcam/roll : 0.0
     rgbcam/sensor_tick : "0.033333f"
@@ -26,6 +26,30 @@
     radar/points_per_second : "50000"
     radar/range : "60.0f"
     radar_topic_name: "front_radar"
+    left_radar/x : 1.9
+    left_radar/y : -1.4
+    left_radar/z : 0.7
+    left_radar/pitch : 0.0 
+    left_radar/yaw : -125.0
+    left_radar/roll : 0.0
+    left_radar/sensor_tick : "0.000001f"
+    left_radar/horizontal_fov : "110.0f"
+    left_radar/vertical_fov : "4.4f"
+    left_radar/points_per_second : "50000"
+    left_radar/range : "13.0f"
+    left_radar_topic_name: "left_radar"
+    right_radar/x : 1.9
+    right_radar/y : 1.4
+    right_radar/z : 0.7
+    right_radar/pitch : 0.0 
+    right_radar/yaw : 125.0
+    right_radar/roll : 0.0
+    right_radar/sensor_tick : "0.000001f"
+    right_radar/horizontal_fov : "110.0f"
+    right_radar/vertical_fov : "4.4f"
+    right_radar/points_per_second : "50000"
+    right_radar/range : "13.0f"
+    right_radar_topic_name: "right_radar"
 
 /**:  
   ros__parameters: 
@@ -35,12 +59,12 @@
     lidar/pitch : 0.0 
     lidar/yaw : 0.0
     lidar/roll : 0.0
-    lidar/sensor_tick : "0.1f"
-    lidar/rotation_frequency : "30.0f"
-    lidar/horizontal_fov : "120.0f"
+    lidar/sensor_tick : "0.05f"
+    lidar/rotation_frequency : "200.0f"
+    lidar/horizontal_fov : "30.0f"
     lidar/upper_fov : "0.0f"
     lidar/lower_fov : "0.0f"
-    lidar/points_per_second : "30000"
+    lidar/points_per_second : "90000"
     lidar/range : "100.0f"
     lidar_topic_name : "front_lidar"
 
@@ -48,5 +72,4 @@
   ros__parameters: 
     info_topic_name : "velocity"
     steer_topic_name : "steer_control"
-    throttle_topic_name : "throttle_control"
-    initial_hand_brake : false
+    velocity_topic_name : "velocity_control"

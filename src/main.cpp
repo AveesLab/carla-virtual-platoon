@@ -2,8 +2,11 @@
 #include "CarlaLocation.hpp"
 #include "FrontCamera.hpp"
 #include "FrontLidar.hpp"
+#include "FrontRadar.hpp"
 #include "TruckControl.hpp"
 #include "TruckStatus.hpp"
+#include "Spectator.hpp"
+#include "TruckOBU.hpp"
 #include <thread>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -55,6 +58,27 @@ void connect_to_carla(int truck_num) {
     std::cerr << truck_num << " Truck connected to CARLA server" << '\n';
     world = new cc::World(client->GetWorld());
     blueprint_library = world->GetBlueprintLibrary();
+    if(truck_num ==5) {
+    // Get world
+    carla::rpc::WeatherParameters weather = world->GetWeather();
+    /*
+    weather.cloudiness = 5.0f;
+    weather.dust_storm = 0.0f;
+    weather.fog_density = 0.0f;
+    weather.fog_distance = 10.0f;
+    weather.fog_falloff = -1.0f;
+    weather.mie_scattering_scale = 45.0f;
+    weather.precipitation =2.0f;
+    weather.precipitation_deposits =0.75f;
+    weather.rayleigh_scattering_scale = 0.1f;
+    weather.scattering_intensity =0.0f;
+    */
+    weather.sun_altitude_angle =115.0f;
+    weather.sun_azimuth_angle =10.0f;
+   // weather.wetness=0.0331f;
+  //  weather.wind_intensity=0.0f;
+    world->SetWeather(weather);
+    }
 }
 
 void generate_truck(int truck_num, std::string map_name) {
@@ -85,26 +109,51 @@ void generate_truck(int truck_num, std::string map_name) {
     std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
     auto vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
 
-
+    if(truck_num == 0) {
     rclcpp::executors::MultiThreadedExecutor executor; 
     auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
-    //auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
-    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
-    auto node_control = std::make_shared<TruckControl>(vehicle_truck);
-    auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck);
-
+    auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
+    //auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
+    //auto node_control = std::make_shared<TruckControl>(vehicle_truck);
+    auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
+    //auto node_spectator = std::make_shared<Spectator>(actor_truck);
+    auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
     executor.add_node(node_camera);
-    //executor.add_node(node_radar);
-    executor.add_node(node_lidar);
-    executor.add_node(node_control);
+    executor.add_node(node_radar);
+    //executor.add_node(node_lidar);
+    //executor.add_node(node_control);
     executor.add_node(node_status);
-
+    executor.add_node(node_obu);
+    //executor.add_node(node_spectator);
     executor.spin(); 
 
 
 
     vehicle_truck->Destroy();
-    vehicle_trailer->Destroy();     
+    vehicle_trailer->Destroy();    
+    }
+    else {
+            rclcpp::executors::MultiThreadedExecutor executor; 
+    auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
+    auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
+    //auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
+    auto node_control = std::make_shared<TruckControl>(vehicle_truck);
+    auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
+     auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
+   
+    executor.add_node(node_camera);
+    executor.add_node(node_radar);
+    //executor.add_node(node_lidar);
+    executor.add_node(node_control);
+    executor.add_node(node_status);
+    executor.add_node(node_obu);
+    executor.spin(); 
+
+
+
+    vehicle_truck->Destroy();
+    vehicle_trailer->Destroy();   
+    } 
 }
 
 
