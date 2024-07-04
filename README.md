@@ -109,7 +109,7 @@ git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
 ### Test the vehicle
 Launch CARLA, open a terminal in ```PythonAPI/examples``` and run the following command:
 ```
-python manual_controlSemiTrailer.py
+python3 manual_controlSemiTrailer.py
 ```
 
 # 5. Import K-track Map
