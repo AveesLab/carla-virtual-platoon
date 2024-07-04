@@ -189,6 +189,14 @@ python3 manual_controlSemiTrailer.py
     ```
     source ~/.bashrc
     ```
+- Set build dependency
+    ```
+    cd ~/carla/PythonAPI/carla
+    cp ./dependencies ~/ros2_ws/src/carla-virtual-platoon
+    
+    cd ~/ros2_ws/src/carla-virtual-platoon
+    mv dependencies libcarla-install
+    ```
 - Packages build
     ```
     cd ~/ros2_ws
