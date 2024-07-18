@@ -14,42 +14,81 @@
 
 /**:  
   ros__parameters:
-    radar/x : 2.3
-    radar/y : 0.0
-    radar/z : 1.5
-    radar/pitch : 0.0 
-    radar/yaw : 0.0
-    radar/roll : 0.0
-    radar/sensor_tick : "0.000001f"
-    radar/horizontal_fov : "40.0f"
-    radar/vertical_fov : "4.4f"
-    radar/points_per_second : "50000"
-    radar/range : "60.0f"
-    radar_topic_name: "front_radar"
-    left_radar/x : 1.9
-    left_radar/y : -1.4
-    left_radar/z : 0.7
-    left_radar/pitch : 0.0 
-    left_radar/yaw : -125.0
-    left_radar/roll : 0.0
-    left_radar/sensor_tick : "0.000001f"
-    left_radar/horizontal_fov : "110.0f"
-    left_radar/vertical_fov : "4.4f"
-    left_radar/points_per_second : "50000"
-    left_radar/range : "13.0f"
-    left_radar_topic_name: "left_radar"
-    right_radar/x : 1.9
-    right_radar/y : 1.4
-    right_radar/z : 0.7
-    right_radar/pitch : 0.0 
-    right_radar/yaw : 125.0
-    right_radar/roll : 0.0
-    right_radar/sensor_tick : "0.000001f"
-    right_radar/horizontal_fov : "110.0f"
-    right_radar/vertical_fov : "4.4f"
-    right_radar/points_per_second : "50000"
-    right_radar/range : "13.0f"
-    right_radar_topic_name: "right_radar"
+          #    radar/x : 2.3
+          #    radar/y : 0.0
+          #    radar/z : 1.5
+          #    radar/pitch : 0.0 
+          #    radar/yaw : 0.0
+          #    radar/roll : 0.0
+          #    radar/sensor_tick : "0.000001f"
+          #    radar/horizontal_fov : "40.0f"
+          #    radar/vertical_fov : "4.4f"
+          #    radar/points_per_second : "50000"
+          #    radar/range : "60.0f"
+          #    radar_topic_name: "front_radar"
+          #    left_radar/x : 1.9
+          #    left_radar/y : -1.4
+          #    left_radar/z : 0.7
+          #    left_radar/pitch : 0.0 
+          #    left_radar/yaw : -125.0
+          #    left_radar/roll : 0.0
+          #    left_radar/sensor_tick : "0.000001f"
+          #    left_radar/horizontal_fov : "110.0f"
+          #    left_radar/vertical_fov : "4.4f"
+          #    left_radar/points_per_second : "50000"
+          #    left_radar/range : "13.0f"
+          #    left_radar_topic_name: "left_radar"
+          #    right_radar/x : 1.9
+          #    right_radar/y : 1.4
+          #    right_radar/z : 0.7
+          #    right_radar/pitch : 0.0 
+          #    right_radar/yaw : 125.0
+          #    right_radar/roll : 0.0
+          #    right_radar/sensor_tick : "0.000001f"
+          #    right_radar/horizontal_fov : "110.0f"
+          #    right_radar/vertical_fov : "4.4f"
+          #    right_radar/points_per_second : "50000"
+          #    right_radar/range : "13.0f"
+          #    right_radar_topic_name: "right_radar"
+
+    radar0/x : 2.3
+    radar0/y : 0.0
+    radar0/z : 1.5
+    radar0/pitch : 0.0 
+    radar0/yaw : 0.0
+    radar0/roll : 0.0
+    radar0/sensor_tick : "0.000001f"
+    radar0/horizontal_fov : "40.0f"
+    radar0/vertical_fov : "4.4f"
+    radar0/points_per_second : "10000"
+    radar0/range : "60.0f"
+    radar0_topic_name: "radar0"
+
+    radar1/x : 1.9
+    radar1/y : -1.4
+    radar1/z : 0.7
+    radar1/pitch : 0.0 
+    radar1/yaw : -125.0
+    radar1/roll : 0.0
+    radar1/sensor_tick : "0.000001f"
+    radar1/horizontal_fov : "110.0f"
+    radar1/vertical_fov : "4.4f"
+    radar1/points_per_second : "50000"
+    radar1/range : "13.0f"
+    radar1_topic_name: "radar1"
+    
+    radar2/x : 1.9
+    radar2/y : 1.4
+    radar2/z : 0.7
+    radar2/pitch : 0.0 
+    radar2/yaw : 125.0
+    radar2/roll : 0.0
+    radar2/sensor_tick : "0.000001f"
+    radar2/horizontal_fov : "110.0f"
+    radar2/vertical_fov : "4.4f"
+    radar2/points_per_second : "50000"
+    radar2/range : "13.0f"
+    radar2_topic_name: "radar2"
 
 /**:  
   ros__parameters: 
@@ -73,3 +112,10 @@
     info_topic_name : "velocity"
     steer_topic_name : "steer_control"
     velocity_topic_name : "velocity_control"
+
+/**:  
+  ros__parameters:
+    add_sensor/front_camera : true 
+    add_sensor/lidar : false 
+    add_sensor/spectator : true 
+    add_sensor/radar_number : 1 

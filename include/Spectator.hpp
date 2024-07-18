@@ -34,4 +34,5 @@ boost::shared_ptr<carla::client::Actor> actor_;
     std::string rgbcam_image_size_x;
     std::string rgbcam_image_size_y;
     std::string rgbcam_fov;
+    bool spectator_;
 };

@@ -19,6 +19,7 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
     LaneChangeSubscriber_ = this->create_subscription<std_msgs::msg::Bool>("lane_change_flag", 10, std::bind(&TruckOBU::LaneChangeSubCallback, this, std::placeholders::_1));
     TimeGapSubscriber_ = this->create_subscription<std_msgs::msg::Float32>("timegap", 10, std::bind(&TruckOBU::TimeGapSubCallback, this, std::placeholders::_1));
 
+
     obu_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.v2x")));
     assert(obu_bp != nullptr);
     obu_bp->SetAttribute("path_loss_model", "geometric");
@@ -94,8 +95,8 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
             // Replace with actual method to access the message content
             auto msg = data.Message;
             auto power = data.Power;
-            RCLCPP_INFO(this->get_logger(), "Publishing: %d",msg.header.stationID);
-            RCLCPP_INFO(this->get_logger(), "Publishing: %s",msg.message);
+//            RCLCPP_INFO(this->get_logger(), "Publishing: %d",msg.header.stationID);
+//            RCLCPP_INFO(this->get_logger(), "Publishing: %s",msg.message);
 
             std::istringstream iss(msg.message);
             std::string token;
@@ -126,15 +127,14 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
             v2xcustom_publisher_->publish(msg_);
         }
     });
-
 }
 
 void TruckOBU::timerCallback() {
     std::ostringstream oss;
-    oss << "emergency_flag: " << (this->emergency_flag ? "true" : "false") << ", "
-        << "caution_mode_lane1: " << (this->caution_mode_lane1 ? "true" : "false") << ", "
-        << "lane_change_flag: " << (this->lane_change_flag ? "true" : "false") << ", "
-        << "timegap: " << this->timegap;
+//    oss << "emergency_flag: " << (this->emergency_flag ? "true" : "false") << ", "
+//        << "caution_mode_lane1: " << (this->caution_mode_lane1 ? "true" : "false") << ", "
+//        << "lane_change_flag: " << (this->lane_change_flag ? "true" : "false") << ", "
+//        << "timegap: " << this->timegap;
 
     v2x_custom->Send(oss.str());
 }

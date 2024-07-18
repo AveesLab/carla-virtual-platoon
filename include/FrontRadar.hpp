@@ -10,13 +10,19 @@ public:
         radar->Destroy();
   }
 private:
-    void publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &radar_data);
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+    void publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &radar_data, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher);
+//    void publishRadarData(boost::shared_ptr<carla::sensor::data::RadarMeasurement> radar_data, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher) ;
+//    void publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &radar_data);
+    std::vector<rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr> publishers_;
+    std::vector<boost::shared_ptr<cc::Sensor>> radar_sensors;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher;
 
     boost::shared_ptr<carla::client::Sensor> radar;
     boost::shared_ptr<carla::client::Actor> radar_actor;
     carla::geom::Transform radar_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> radar_bp;
+
+    int num_radars_;
 
     float radar_x;
     float radar_y;
@@ -31,7 +37,7 @@ private:
     std::string radar_range;
     std::string radar_topic_name;
     std::string role_name_;
-
+    bool f_radar_;
 
     //left_radar
     void publishLeftRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement);
@@ -54,7 +60,7 @@ private:
     std::string left_radar_points_per_second;
     std::string left_radar_range;
     std::string left_radar_topic_name;
-
+    bool l_radar_;
 
     //right_radar
     void publishRightRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement);
@@ -77,4 +83,5 @@ private:
     std::string right_radar_points_per_second;
     std::string right_radar_range;
     std::string right_radar_topic_name;
+    bool r_radar_;
 };

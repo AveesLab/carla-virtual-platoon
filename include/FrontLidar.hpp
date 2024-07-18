@@ -33,4 +33,5 @@ private:
     std::string lidar_range;
     std::string lidar_topic_name;
     std::string lidar_rotation_frequency;
+    bool lidar_;
 };

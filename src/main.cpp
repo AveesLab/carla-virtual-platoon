@@ -113,20 +113,21 @@ void generate_truck(int truck_num, std::string map_name) {
     rclcpp::executors::MultiThreadedExecutor executor; 
     auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
     auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
-    //auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
-    //auto node_control = std::make_shared<TruckControl>(vehicle_truck);
+    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
+    auto node_control = std::make_shared<TruckControl>(vehicle_truck);
     auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
-    //auto node_spectator = std::make_shared<Spectator>(actor_truck);
+    auto node_spectator = std::make_shared<Spectator>(actor_truck);
     auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
+
     executor.add_node(node_camera);
     executor.add_node(node_radar);
-    //executor.add_node(node_lidar);
-    //executor.add_node(node_control);
-    executor.add_node(node_status);
+    executor.add_node(node_lidar);
     executor.add_node(node_obu);
-    //executor.add_node(node_spectator);
-    executor.spin(); 
 
+    executor.add_node(node_spectator);
+    executor.add_node(node_control);
+    executor.add_node(node_status);
+    executor.spin(); 
 
 
     vehicle_truck->Destroy();
@@ -136,17 +137,18 @@ void generate_truck(int truck_num, std::string map_name) {
             rclcpp::executors::MultiThreadedExecutor executor; 
     auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
     auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
-    //auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
+//    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
     auto node_control = std::make_shared<TruckControl>(vehicle_truck);
     auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
-     auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
-   
+    auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
+    
     executor.add_node(node_camera);
     executor.add_node(node_radar);
-    //executor.add_node(node_lidar);
+//    executor.add_node(node_lidar);
+    executor.add_node(node_obu);
+   
     executor.add_node(node_control);
     executor.add_node(node_status);
-    executor.add_node(node_obu);
     executor.spin(); 
 
 
