@@ -44,7 +44,7 @@ add_executable(main
     nodes/Spectator.cpp
     nodes/Camera.cpp
     nodes/Radar.cpp
-    nodes/FrontLidar.cpp
+    nodes/Lidar.cpp
     nodes/TruckControl.cpp
     nodes/TruckStatus.cpp
     nodes/TruckOBU.cpp

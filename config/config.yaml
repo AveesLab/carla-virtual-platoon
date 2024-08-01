@@ -91,20 +91,20 @@
 
 /**:  
   ros__parameters: 
-    lidar/x : 2.3
-    lidar/y : 0.0
-    lidar/z : 1.5
-    lidar/pitch : 0.0 
-    lidar/yaw : 0.0
-    lidar/roll : 0.0
-    lidar/sensor_tick : "0.05f"
-    lidar/rotation_frequency : "200.0f"
-    lidar/horizontal_fov : "30.0f"
-    lidar/upper_fov : "0.0f"
-    lidar/lower_fov : "0.0f"
-    lidar/points_per_second : "90000"
-    lidar/range : "100.0f"
-    lidar_topic_name : "front_lidar"
+    lidar0/x : 2.3
+    lidar0/y : 0.0
+    lidar0/z : 1.5
+    lidar0/pitch : 0.0 
+    lidar0/yaw : 0.0
+    lidar0/roll : 0.0
+    lidar0/sensor_tick : "0.05f"
+    lidar0/rotation_frequency : "200.0f"
+    lidar0/horizontal_fov : "30.0f"
+    lidar0/upper_fov : "0.0f"
+    lidar0/lower_fov : "0.0f"
+    lidar0/points_per_second : "90000"
+    lidar0/range : "100.0f"
+    lidar0_topic_name : "lidar0" #front lidar
 
 /**:  
   ros__parameters: 
@@ -114,7 +114,7 @@
 
 /**:  
   ros__parameters:
-    add_sensor/lidar : false 
     add_sensor/spectator : true 
     add_sensor/radar_number : 3 
     add_sensor/camera_number : 4 
+    add_sensor/lidar_number : 0 

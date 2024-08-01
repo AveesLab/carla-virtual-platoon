@@ -3,21 +3,25 @@
 #include <rclcpp/qos.hpp>
 
 
-class FrontLidarPublisher : public rclcpp::Node {
+class LidarPublisher : public rclcpp::Node {
 
 public:
-    FrontLidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
-    ~FrontLidarPublisher(){
+    LidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
+    ~LidarPublisher(){
         lidar->Destroy();
   }
 private:
-    void publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &lidar_data);
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+    void publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &lidar_data, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher);
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher;
+    std::vector<rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr> publishers_;
+    std::vector<boost::shared_ptr<cc::Sensor>> lidar_sensors;
 
     boost::shared_ptr<carla::client::Sensor> lidar;
     boost::shared_ptr<carla::client::Actor> lidar_actor;
     carla::geom::Transform lidar_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> lidar_bp;
+
+    int num_lidars_;
 
     float lidar_x;
     float lidar_y;
@@ -33,5 +37,4 @@ private:
     std::string lidar_range;
     std::string lidar_topic_name;
     std::string lidar_rotation_frequency;
-    bool lidar_;
 };

@@ -1,7 +1,7 @@
 #include "Radar.hpp"
 
 RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
-    : Node("radar_node"+ std::to_string(actor->GetId()), rclcpp::NodeOptions()
+    : Node("radar_node" + std::to_string(actor->GetId()), rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)) {
 
