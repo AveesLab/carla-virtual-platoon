@@ -43,7 +43,7 @@ add_executable(main
     src/main.cpp
     nodes/Spectator.cpp
     nodes/FrontCamera.cpp
-    nodes/FrontRadar.cpp
+    nodes/Radar.cpp
     nodes/FrontLidar.cpp
     nodes/TruckControl.cpp
     nodes/TruckStatus.cpp

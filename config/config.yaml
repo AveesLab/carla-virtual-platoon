@@ -14,43 +14,6 @@
 
 /**:  
   ros__parameters:
-          #    radar/x : 2.3
-          #    radar/y : 0.0
-          #    radar/z : 1.5
-          #    radar/pitch : 0.0 
-          #    radar/yaw : 0.0
-          #    radar/roll : 0.0
-          #    radar/sensor_tick : "0.000001f"
-          #    radar/horizontal_fov : "40.0f"
-          #    radar/vertical_fov : "4.4f"
-          #    radar/points_per_second : "50000"
-          #    radar/range : "60.0f"
-          #    radar_topic_name: "front_radar"
-          #    left_radar/x : 1.9
-          #    left_radar/y : -1.4
-          #    left_radar/z : 0.7
-          #    left_radar/pitch : 0.0 
-          #    left_radar/yaw : -125.0
-          #    left_radar/roll : 0.0
-          #    left_radar/sensor_tick : "0.000001f"
-          #    left_radar/horizontal_fov : "110.0f"
-          #    left_radar/vertical_fov : "4.4f"
-          #    left_radar/points_per_second : "50000"
-          #    left_radar/range : "13.0f"
-          #    left_radar_topic_name: "left_radar"
-          #    right_radar/x : 1.9
-          #    right_radar/y : 1.4
-          #    right_radar/z : 0.7
-          #    right_radar/pitch : 0.0 
-          #    right_radar/yaw : 125.0
-          #    right_radar/roll : 0.0
-          #    right_radar/sensor_tick : "0.000001f"
-          #    right_radar/horizontal_fov : "110.0f"
-          #    right_radar/vertical_fov : "4.4f"
-          #    right_radar/points_per_second : "50000"
-          #    right_radar/range : "13.0f"
-          #    right_radar_topic_name: "right_radar"
-
     radar0/x : 2.3
     radar0/y : 0.0
     radar0/z : 1.5
@@ -60,7 +23,7 @@
     radar0/sensor_tick : "0.000001f"
     radar0/horizontal_fov : "40.0f"
     radar0/vertical_fov : "4.4f"
-    radar0/points_per_second : "10000"
+    radar0/points_per_second : "50000"
     radar0/range : "60.0f"
     radar0_topic_name: "radar0"
 
@@ -118,4 +81,4 @@
     add_sensor/front_camera : true 
     add_sensor/lidar : false 
     add_sensor/spectator : true 
-    add_sensor/radar_number : 1 
+    add_sensor/radar_number : 3 

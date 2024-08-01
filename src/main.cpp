@@ -2,7 +2,7 @@
 #include "CarlaLocation.hpp"
 #include "FrontCamera.hpp"
 #include "FrontLidar.hpp"
-#include "FrontRadar.hpp"
+#include "Radar.hpp"
 #include "TruckControl.hpp"
 #include "TruckStatus.hpp"
 #include "Spectator.hpp"
@@ -112,7 +112,7 @@ void generate_truck(int truck_num, std::string map_name) {
     if(truck_num == 0) {
     rclcpp::executors::MultiThreadedExecutor executor; 
     auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
-    auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
+    auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
     auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
     auto node_control = std::make_shared<TruckControl>(vehicle_truck);
     auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
@@ -136,7 +136,7 @@ void generate_truck(int truck_num, std::string map_name) {
     else {
             rclcpp::executors::MultiThreadedExecutor executor; 
     auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
-    auto node_radar = std::make_shared<FrontRadarPublisher>(actor_truck);
+    auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
 //    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
     auto node_control = std::make_shared<TruckControl>(vehicle_truck);
     auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
