@@ -42,7 +42,7 @@ include(dependency.cmake)
 add_executable(main
     src/main.cpp
     nodes/Spectator.cpp
-    nodes/FrontCamera.cpp
+    nodes/Camera.cpp
     nodes/Radar.cpp
     nodes/FrontLidar.cpp
     nodes/TruckControl.cpp

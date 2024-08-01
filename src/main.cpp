@@ -1,6 +1,6 @@
 #include "shared_carlalib.h"
 #include "CarlaLocation.hpp"
-#include "FrontCamera.hpp"
+#include "Camera.hpp"
 #include "FrontLidar.hpp"
 #include "Radar.hpp"
 #include "TruckControl.hpp"
@@ -111,7 +111,7 @@ void generate_truck(int truck_num, std::string map_name) {
 
     if(truck_num == 0) {
     rclcpp::executors::MultiThreadedExecutor executor; 
-    auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
+    auto node_camera = std::make_shared<CameraPublisher>(actor_truck);
     auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
     auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
     auto node_control = std::make_shared<TruckControl>(vehicle_truck);
@@ -135,7 +135,7 @@ void generate_truck(int truck_num, std::string map_name) {
     }
     else {
             rclcpp::executors::MultiThreadedExecutor executor; 
-    auto node_camera = std::make_shared<FrontCameraPublisher>(actor_truck);
+    auto node_camera = std::make_shared<CameraPublisher>(actor_truck);
     auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
 //    auto node_lidar = std::make_shared<FrontLidarPublisher>(actor_truck);
     auto node_control = std::make_shared<TruckControl>(vehicle_truck);

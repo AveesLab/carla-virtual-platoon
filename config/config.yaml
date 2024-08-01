@@ -1,16 +1,52 @@
 /**:  
   ros__parameters:
-    rgbcam/x : 2.3
-    rgbcam/y : 0.0
-    rgbcam/z : 3.5
-    rgbcam/pitch : -15.0 
-    rgbcam/yaw : 0.0
-    rgbcam/roll : 0.0
-    rgbcam/sensor_tick : "0.033333f"
-    rgbcam/image_size_x : "640"
-    rgbcam/image_size_y : "480"
-    rgbcam/fov : "90.0f"
-    rgbcam_topic_name : "front_camera"
+    camera0/x : 2.3
+    camera0/y : 0.0
+    camera0/z : 3.5
+    camera0/pitch : -15.0 
+    camera0/yaw : 0.0
+    camera0/roll : 0.0
+    camera0/sensor_tick : "0.033333f"
+    camera0/image_size_x : "640"
+    camera0/image_size_y : "480"
+    camera0/fov : "90.0f"
+    camera0_topic_name : "camera0" #front camera
+
+    camera1/x : -14.3
+    camera1/y : 0.0
+    camera1/z : 3.5
+    camera1/pitch : -15.0 
+    camera1/yaw : -180.0
+    camera1/roll : 0.0
+    camera1/sensor_tick : "0.033333f"
+    camera1/image_size_x : "640"
+    camera1/image_size_y : "480"
+    camera1/fov : "90.0f"
+    camera1_topic_name : "camera1" #rear camera
+
+    camera2/x : 1.3
+    camera2/y : 1.4
+    camera2/z : 2.5
+    camera2/pitch : 0.0 
+    camera2/yaw : -210.0
+    camera2/roll : 0.0
+    camera2/sensor_tick : "0.033333f"
+    camera2/image_size_x : "640"
+    camera2/image_size_y : "480"
+    camera2/fov : "90.0f"
+    camera2_topic_name : "camera2" #left camera
+
+    camera3/x : 1.3
+    camera3/y : -1.4
+    camera3/z : 2.5
+    camera3/pitch : 0.0 
+    camera3/yaw : -150.0
+    camera3/roll : 0.0
+    camera3/sensor_tick : "0.033333f"
+    camera3/image_size_x : "640"
+    camera3/image_size_y : "480"
+    camera3/fov : "90.0f"
+    camera3_topic_name : "camera3" #right camera
 
 /**:  
   ros__parameters:
@@ -25,7 +61,7 @@
     radar0/vertical_fov : "4.4f"
     radar0/points_per_second : "50000"
     radar0/range : "60.0f"
-    radar0_topic_name: "radar0"
+    radar0_topic_name: "radar0" #front radar
 
     radar1/x : 1.9
     radar1/y : -1.4
@@ -38,7 +74,7 @@
     radar1/vertical_fov : "4.4f"
     radar1/points_per_second : "50000"
     radar1/range : "13.0f"
-    radar1_topic_name: "radar1"
+    radar1_topic_name: "radar1" #left radar
     
     radar2/x : 1.9
     radar2/y : 1.4
@@ -51,7 +87,7 @@
     radar2/vertical_fov : "4.4f"
     radar2/points_per_second : "50000"
     radar2/range : "13.0f"
-    radar2_topic_name: "radar2"
+    radar2_topic_name: "radar2" #right radar
 
 /**:  
   ros__parameters: 
@@ -78,7 +114,7 @@
 
 /**:  
   ros__parameters:
-    add_sensor/front_camera : true 
     add_sensor/lidar : false 
     add_sensor/spectator : true 
     add_sensor/radar_number : 3 
+    add_sensor/camera_number : 4 
