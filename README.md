@@ -60,7 +60,6 @@ pip3 install --user wheel auditwheel
     cd
     git clone https://github.com/carla-simulator/carla
     cd ~/carla
-    git checkout tags/0.9.15.2
     ```
 - Get assets
     Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in **CONTENT_LINK**
@@ -153,10 +152,7 @@ python3 manual_controlSemiTrailer.py
     sudo apt update
     sudo apt upgrade
     sudo apt install ros-galactic-desktop
-    ```
-- Colcon install
-    ```
-    sudo apt install python3-colcon-common-extensions
+    sudo apt install ros-dev-tools
     ```
 
 # 7. Install & Run bridge
