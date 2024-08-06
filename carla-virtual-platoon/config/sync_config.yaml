@@ -1,0 +1,8 @@
+/**:  
+  ros__parameters:
+    carla/sync : true
+    carla/sync_with_delay : false
+    period/behavior_planner : 0.03
+    delay/behavior_planner : 100.0
+    period/path_planner : 0.03
+    delay/bahavior_planner : 30.0
