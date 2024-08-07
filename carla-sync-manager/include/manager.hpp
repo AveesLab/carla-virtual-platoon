@@ -28,7 +28,7 @@ private:
     mutex mutex_;
     bool isNodeRunning_ = false;
     bool registered = false;
-    int size = 2;
+    int size = 0;
     int cnt = 0;
     std::vector<bool> registration_;
     std::vector<bool> sync_throttle;

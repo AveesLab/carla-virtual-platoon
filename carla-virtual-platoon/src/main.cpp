@@ -69,6 +69,17 @@ void sync_request(int trucknum_) {
     publisher->publish(message);
 }
 
+void notify_numtrucks_to_manager(int numtrucks_) {
+    auto node = rclcpp::Node::make_shared("numtrucks_publisher");
+    auto publisher = node->create_publisher<std_msgs::msg::Int32>("/numtruckss", 10);
+    sleep(1);
+    auto message = std_msgs::msg::Int32();
+    message.data = numtrucks_;
+    RCLCPP_INFO(node->get_logger(), "Publishing: '%d'", message.data);
+    publisher->publish(message);
+}
+
+
 void connect_to_carla(int truck_num) {
     //Connecting to CARLA server;
     client = new cc::Client(host, port);
@@ -204,7 +215,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Number of trucks : " <<numtrucks << std::endl;
             std::cout << "Truck Number : " << truck_num << std::endl;
             std::cout << "Map Name : " << map_name << std::endl;            
-            //notify_numtrucks_to_manager(numtrucks);  
+            notify_numtrucks_to_manager(numtrucks);  
         }
 
         connect_to_carla(truck_num);

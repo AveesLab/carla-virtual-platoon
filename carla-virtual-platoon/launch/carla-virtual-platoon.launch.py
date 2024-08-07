@@ -30,7 +30,8 @@ def generate_nodes(context, *, num_trucks, map_name):
             parameters=[ros_param_file,sync_param_file],
             arguments=[
                 f'--truck_id={i-1}', 
-                f'--map={map_name}'
+                f'--map={map_name}',
+                f'--numtrucks={num_trucks}'
             ],
             on_exit=launch.actions.Shutdown()  
         )
