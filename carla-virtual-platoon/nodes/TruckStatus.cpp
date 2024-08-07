@@ -7,6 +7,8 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
 
     this->get_parameter_or("info_topic_name",info_topic_name,std::string("velocity_info"));
     this->actor_ = actor;
+    rclcpp::QoS qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_sensor_data));
+
     AccelPublisher_ = this->create_publisher<std_msgs::msg::Float32MultiArray>("accel",1);
     VelocityPublisher_ = this->create_publisher<std_msgs::msg::Float32>(info_topic_name,1);
     ShutdownSubscriber = this->create_subscription<std_msgs::msg::String>("/shutdown_topic", 10, std::bind(&TruckStatusPublisher::shutdown_callback, this, std::placeholders::_1));
@@ -16,7 +18,7 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
     gettimeofday(&init_, NULL);
     timer_100ms_record = this->create_wall_timer(100ms, std::bind(&TruckStatusPublisher::TruckStatus_record_callback, this));
 
-    IMUPublisher_ = this->create_publisher<ros2_msg::msg::IMU>("imu",1);
+    IMUPublisher_ = this->create_publisher<ros2_msg::msg::IMU>("imu",qos);
     GnssPublisher_ = this->create_publisher<ros2_msg::msg::GNSS>("gnss",1);
     //IMU
     generate_imu();
@@ -26,7 +28,7 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
 void TruckStatusPublisher::generate_imu() {
     imu_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.imu")));
     assert(imu_bp != nullptr);
-    imu_bp->SetAttribute("sensor_tick", "0.01");
+    imu_bp->SetAttribute("sensor_tick", "0.0");
 
 
     imu_transform = cg::Transform{ cg::Location{}, cg::Rotation{}}; // pitch, yaw, roll.

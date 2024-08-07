@@ -19,7 +19,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
     }
 
     velocity_image_queue.resize(num_cameras_);
-    publishers_.resize(num_cameras_);
+    //publishers_.resize(num_cameras_);
 
     for(int i=0; i<num_cameras_; ++i){
         std::string index = std::to_string(i);
@@ -63,14 +63,24 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
             assert(image != nullptr);
 
             static int prev_tick_cnt = 0;
-
+             
             if(sync_with_delay) {
                
-                if (!velocity_image_queue[i].empty() && (tick_cnt == 0 ? prev_tick_cnt - velocity_image_queue[i].front().timestamp >= velocity_planner_delay : tick_cnt - velocity_image_queue[i].front().timestamp >= velocity_planner_delay)) {
-                    auto image_ = velocity_image_queue[i].front().image;
-                    velocity_image_queue[i].pop();
-                    publishImage(*image_, publishers_[i]);
-                    wait_for_velocity(true);
+                if (!velocity_image_queue[i].empty()) {
+                    int time_diff = tick_cnt - velocity_image_queue[i].front().timestamp;
+                    if(time_diff < 0) time_diff += lcm_period;
+
+                    if(time_diff == velocity_planner_delay) {
+                        auto image_ = velocity_image_queue[i].front().image;
+                        std::cerr << "pub to yolo" << " " << velocity_image_queue[i].front().timestamp << std::endl;
+                        velocity_image_queue[i].pop();
+                        wait_for_velocity(true);
+                        publishImage(*image_, publishers_[i]);
+                    }
+                    else {
+                        wait_for_velocity(false);
+                    }
+
                 }
                 else {
                     wait_for_velocity(false);
@@ -79,11 +89,20 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
                 
 
                
-                if (i == 0 && !path_image_queue.empty() && (tick_cnt == 0 ? prev_tick_cnt - path_image_queue.front().timestamp >= path_planner_delay : tick_cnt - path_image_queue.front().timestamp >= path_planner_delay)) {
-                    auto image_ = path_image_queue.front().image;
-                    path_image_queue.pop();
-                    publishImage(*image_, LaneImagePublisher);
-                    wait_for_velocity(true);
+                if (i == 0 && !path_image_queue.empty()) {
+                    int time_diff = tick_cnt - path_image_queue.front().timestamp;
+                    if(time_diff < 0) time_diff += lcm_period;
+
+                    if(time_diff == path_planner_delay) {
+                        auto image_ = path_image_queue.front().image;
+                        std::cerr << "pub to lane" << " " << path_image_queue.front().timestamp << std::endl;
+                        path_image_queue.pop();
+                        wait_for_lane(true);
+                        publishImage(*image_, LaneImagePublisher);
+                    }
+                    else {
+                        wait_for_lane(false);
+                    }
                 }
                 else {
                     wait_for_lane(false);
@@ -98,14 +117,19 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
                     path_image_queue.push(TimedImage{image, tick_cnt});
                 }
 
-                tick_cnt += 10;
-
-                if(tick_cnt >= lcm_period) {
+                
+                if(i == num_cameras_-1) {
                     prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
-                    tick_cnt = 0;
+                    tick_cnt += 10;
+
+                    if(tick_cnt >= lcm_period) {
+                        tick_cnt = 0;
+                    }
+
                 }
 
-            } else {
+            } 
+            else {
                 publishImage(*image, publishers_[i]);
             }
         });
@@ -154,7 +178,6 @@ int CameraPublisher::lcm(int a, int b) {
 
 void CameraPublisher::publishImage(const csd::Image &carla_image, rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher) {
     auto msg = std::make_unique<sensor_msgs::msg::Image>();
-  
     // Set the header
      msg->header.stamp = this->now();
    
@@ -180,7 +203,7 @@ void CameraPublisher::publishImage(const csd::Image &carla_image, rclcpp::Publis
         msg->data[msg_index + 1] = raw_data[raw_index + 1]; // Green
         msg->data[msg_index + 2] = raw_data[raw_index];     // Blue
     }
-    std::cerr << "pub image" << std::endl;
+    //std::cerr << "pub image" << std::endl;
     // Publish the message
     publisher->publish(*msg);
 }

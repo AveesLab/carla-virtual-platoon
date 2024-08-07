@@ -38,6 +38,7 @@ private:
     int velocity_planner_period = 30;
     int velocity_planner_delay = 100;
     std::vector<std::queue<TimedRadar>> velocity_radar_queue;
+    int cnt = 0;
 
     int num_radars_;
     float radar_x;

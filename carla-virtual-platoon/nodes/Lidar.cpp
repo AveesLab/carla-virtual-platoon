@@ -16,7 +16,7 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     }
 
     velocity_lidar_queue.resize(num_lidars_);
-    publishers_.resize(num_lidars_);
+    //publishers_.resize(num_lidars_);
 
     for(int i=0; i<num_lidars_; ++i){
         std::string index = std::to_string(i);
@@ -78,11 +78,13 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
                 if(tick_cnt % velocity_planner_period == 0) {
                     velocity_lidar_queue[i].push(TimedLidar(lidar_data, tick_cnt));
                 }
-                tick_cnt += 10;
+                if(i == num_lidars_-1) {
+                    tick_cnt += 10;
 
-                if(tick_cnt >= lcm_period) {
-                    prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
-                    tick_cnt = 0;
+                    if(tick_cnt >= lcm_period) {
+                        prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
+                        tick_cnt = 0;
+                    }
                 }
             }
             else {

@@ -1,4 +1,7 @@
 #include "Radar.hpp"
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     : Node("radar_node" + std::to_string(actor->GetId()), rclcpp::NodeOptions()
@@ -16,7 +19,7 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     }
 
     velocity_radar_queue.resize(num_radars_);
-    publishers_.resize(num_radars_);
+    //publishers_.resize(num_radars_);
 
     for(int i=0; i<num_radars_; ++i){
         std::string index = std::to_string(i);
@@ -59,28 +62,41 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
         radar->Listen([this, i](auto data) {
             auto radar_data = boost::static_pointer_cast<carla::sensor::data::RadarMeasurement>(data);
             assert(radar_data != nullptr);
-
+            
             static int prev_tick_cnt = 0;
-
+            if(i == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
             if(sync_with_delay) {
 
-                if (!velocity_radar_queue[i].empty() && (tick_cnt == 0 ? prev_tick_cnt - velocity_radar_queue[i].front().timestamp >= velocity_planner_delay : tick_cnt - velocity_radar_queue[i].front().timestamp >= velocity_planner_delay)) {
-                    auto radar_data_ = velocity_radar_queue[i].front().radar;
-                    velocity_radar_queue[i].pop();
-                    publishRadarData(radar_data_, publishers_[i]);
+                if (!velocity_radar_queue[i].empty()) {
+                    int time_diff = tick_cnt - velocity_radar_queue[i].front().timestamp;
+                    if(time_diff <0) time_diff += lcm_period;
+
+                    if(time_diff == velocity_planner_delay) {
+                        auto radar_data_ = velocity_radar_queue[i].front().radar;
+                        std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << std::endl;
+                        velocity_radar_queue[i].pop();
+                        publishRadarData(radar_data_, publishers_[i]);
+                    }
+                    else std::cerr << i << " eopmtyytgtyeahearherh" << time_diff << " " << velocity_radar_queue[i].front().timestamp<< std::endl;
                 }
+                else std::cerr << i << " eopmty" << std::endl;
                 
 
                 if(tick_cnt % velocity_planner_period == 0) {
+                    std::cerr << i <<"  save radar" << tick_cnt << std::endl;
                     velocity_radar_queue[i].push(TimedRadar(radar_data, tick_cnt));
                 }
 
-                
-                tick_cnt += 10;
-
-                if(tick_cnt >= lcm_period) {
+                cnt++;
+                if(cnt == num_radars_) {
                     prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
-                    tick_cnt = 0;
+                    tick_cnt += 10;
+
+                    if(tick_cnt >= lcm_period) {
+                        tick_cnt = 0;
+                    }
+
+                    cnt = 0;
                 }
             }
             else {
@@ -195,7 +211,6 @@ void RadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurem
       offset += radar_msg.point_step;  
     }
     radar_msg.data = data;
-    std::cerr << "pub radar" << std::endl;
     publisher->publish(radar_msg);
  
  }

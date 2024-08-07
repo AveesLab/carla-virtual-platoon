@@ -19,5 +19,6 @@ private:
     std::string steer_topic_name;
     std::string velocity_topic_name;
     bool sync_ = false;
+    bool sync_with_delay = false;
     int trucknum = 0;
 };

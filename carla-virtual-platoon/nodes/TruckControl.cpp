@@ -7,10 +7,11 @@ TruckControl::TruckControl(boost::shared_ptr<carla::client::Vehicle> vehicle_, i
     
     this->get_parameter_or("steer_topic_name",steer_topic_name,std::string("steer"));
     this->get_parameter_or("velocity_topic_name",velocity_topic_name,std::string("velocity"));
-    this->get_parameter_or("carla/sync",sync_,true);
+    this->get_parameter_or("carla/sync",sync_,false);
+    this->get_parameter_or("carla/sync_with_delay",sync_with_delay,false);
 
-    if(sync_) SyncThrottlePublisher_ = this->create_publisher<std_msgs::msg::Int32>("/sync_throttle",10);
-    if(sync_) SyncSteerPublisher_ = this->create_publisher<std_msgs::msg::Int32>("/sync_steer",10);
+    if(sync_ || sync_with_delay) SyncThrottlePublisher_ = this->create_publisher<std_msgs::msg::Int32>("/sync_throttle",10);
+    if(sync_ || sync_with_delay) SyncSteerPublisher_ = this->create_publisher<std_msgs::msg::Int32>("/sync_steer",10);
     SteerSubscriber_ = this->create_subscription<std_msgs::msg::Float32>(steer_topic_name, 1, std::bind(&TruckControl::SteerSubCallback, this, std::placeholders::_1));
     VelocitySubscriber_ = this->create_subscription<std_msgs::msg::Float32>(velocity_topic_name, 1, std::bind(&TruckControl::VelocitySubCallback, this, std::placeholders::_1));
     
@@ -26,7 +27,7 @@ void TruckControl::SteerSubCallback(const std_msgs::msg::Float32::SharedPtr msg)
     else if (control_value < -1.0) this->control.steer = -1.0f;
     else this->control.steer = control_value;
     Vehicle_->ApplyControl(control);
-    if(sync_) {
+    if(sync_ || sync_with_delay) {
         std_msgs::msg::Int32 msg;
         msg.data = this->trucknum;
         SyncSteerPublisher_->publish(msg);
@@ -47,7 +48,7 @@ void TruckControl::VelocitySubCallback(const std_msgs::msg::Float32::SharedPtr m
     }
     Vehicle_->ApplyControl(control);
     
-    if(sync_) {
+    if(sync_ || sync_with_delay) {
         std_msgs::msg::Int32 msg;
         msg.data = this->trucknum;
         SyncThrottlePublisher_->publish(msg);
