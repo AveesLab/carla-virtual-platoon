@@ -8,55 +8,113 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
 
     this->get_parameter_or("add_sensor/radar_number", num_radars_, 3);
-    this->get_parameter_or("carla/sync", sync_ , true);
+    this->get_parameter_or("carla/sync", sync_ , false);
+    this->get_parameter_or("carla/sync_with_delay", sync_with_delay, false);
+    
+    if(sync_with_delay) {
+        GetDelayParameter();
+    }
+
+    velocity_radar_queue.resize(num_radars_);
+    publishers_.resize(num_radars_);
 
     for(int i=0; i<num_radars_; ++i){
-     std::string index = std::to_string(i);
+        std::string index = std::to_string(i);
 
-      this->get_parameter_or("radar" + index + "/x", radar_x, 2.3f);
-      this->get_parameter_or("radar" + index + "/y", radar_y, 0.0f);
-      this->get_parameter_or("radar" + index + "/z", radar_z, 1.5f);
-      this->get_parameter_or("radar" + index + "/pitch", radar_pitch, 0.0f);
-      this->get_parameter_or("radar" + index + "/yaw", radar_yaw, 0.0f);
-      this->get_parameter_or("radar" + index + "/roll", radar_roll, 0.0f);
-      this->get_parameter_or("radar" + index + "/sensor_tick", radar_sensor_tick, std::string("0.1"));
-      this->get_parameter_or("radar" + index + "/horizontal_fov", radar_horizontal_fov, std::string("40.0"));
-      this->get_parameter_or("radar" + index + "/vertical_fov", radar_vertical_fov, std::string("30.0"));
-      this->get_parameter_or("radar" + index + "/points_per_second", radar_points_per_second, std::string("8000"));
-      this->get_parameter_or("radar" + index + "/range", radar_range, std::string("300.0"));
-      this->get_parameter_or("radar" + index + "/topic_name", radar_topic_name, std::string("carla/radar" + index));
-      if(sync_) radar_sensor_tick = "0.0f";
+        this->get_parameter_or("radar" + index + "/x", radar_x, 2.3f);
+        this->get_parameter_or("radar" + index + "/y", radar_y, 0.0f);
+        this->get_parameter_or("radar" + index + "/z", radar_z, 1.5f);
+        this->get_parameter_or("radar" + index + "/pitch", radar_pitch, 0.0f);
+        this->get_parameter_or("radar" + index + "/yaw", radar_yaw, 0.0f);
+        this->get_parameter_or("radar" + index + "/roll", radar_roll, 0.0f);
+        this->get_parameter_or("radar" + index + "/sensor_tick", radar_sensor_tick, std::string("0.1"));
+        this->get_parameter_or("radar" + index + "/horizontal_fov", radar_horizontal_fov, std::string("40.0"));
+        this->get_parameter_or("radar" + index + "/vertical_fov", radar_vertical_fov, std::string("30.0"));
+        this->get_parameter_or("radar" + index + "/points_per_second", radar_points_per_second, std::string("8000"));
+        this->get_parameter_or("radar" + index + "/range", radar_range, std::string("300.0"));
+        this->get_parameter_or("radar" + index + "/topic_name", radar_topic_name, std::string("carla/radar" + index));
+        if(sync_ || sync_with_delay) radar_sensor_tick = "0.0f";
 
-      auto publisher = this->create_publisher<sensor_msgs::msg::PointCloud2>(radar_topic_name, custom_qos);
-      publishers_.push_back(publisher);
+        auto publisher = this->create_publisher<sensor_msgs::msg::PointCloud2>(radar_topic_name, custom_qos);
+        publishers_.push_back(publisher);
 
-      auto radar_bp = blueprint_library->Find("sensor.other.radar");
-      assert(radar_bp != nullptr);
-      
-      // Create a modifiable copy of the radar blueprint
-      auto radar_bp_modifiable = *radar_bp;
+        auto radar_bp = blueprint_library->Find("sensor.other.radar");
+        assert(radar_bp != nullptr);
+        
+        // Create a modifiable copy of the radar blueprint
+        auto radar_bp_modifiable = *radar_bp;
 
-      radar_bp_modifiable.SetAttribute("sensor_tick", radar_sensor_tick);
-      radar_bp_modifiable.SetAttribute("horizontal_fov", radar_horizontal_fov);
-      radar_bp_modifiable.SetAttribute("points_per_second", radar_points_per_second);
-      radar_bp_modifiable.SetAttribute("vertical_fov", radar_vertical_fov);
-      radar_bp_modifiable.SetAttribute("range", radar_range);
+        radar_bp_modifiable.SetAttribute("sensor_tick", radar_sensor_tick);
+        radar_bp_modifiable.SetAttribute("horizontal_fov", radar_horizontal_fov);
+        radar_bp_modifiable.SetAttribute("points_per_second", radar_points_per_second);
+        radar_bp_modifiable.SetAttribute("vertical_fov", radar_vertical_fov);
+        radar_bp_modifiable.SetAttribute("range", radar_range);
 
-      auto radar_transform = cg::Transform{cg::Location{radar_x, radar_y, radar_z}, cg::Rotation{radar_pitch, radar_yaw, radar_roll}};
-      auto radar_actor = world->SpawnActor(radar_bp_modifiable, radar_transform, actor.get());
-      auto radar = boost::static_pointer_cast<cc::Sensor>(radar_actor);
+        auto radar_transform = cg::Transform{cg::Location{radar_x, radar_y, radar_z}, cg::Rotation{radar_pitch, radar_yaw, radar_roll}};
+        auto radar_actor = world->SpawnActor(radar_bp_modifiable, radar_transform, actor.get());
+        auto radar = boost::static_pointer_cast<cc::Sensor>(radar_actor);
 
-      radar_sensors.push_back(radar);
+        radar_sensors.push_back(radar);
 
-      radar->Listen([this, i](auto data) {
-        auto radar_data = boost::static_pointer_cast<carla::sensor::data::RadarMeasurement>(data);
-        assert(radar_data != nullptr);
-        publishRadarData(radar_data, publishers_[i]);
-      });
+        radar->Listen([this, i](auto data) {
+            auto radar_data = boost::static_pointer_cast<carla::sensor::data::RadarMeasurement>(data);
+            assert(radar_data != nullptr);
+
+            static int prev_tick_cnt = 0;
+
+            if(sync_with_delay) {
+
+                if (!velocity_radar_queue[i].empty() && (tick_cnt == 0 ? prev_tick_cnt - velocity_radar_queue[i].front().timestamp >= velocity_planner_delay : tick_cnt - velocity_radar_queue[i].front().timestamp >= velocity_planner_delay)) {
+                    auto radar_data_ = velocity_radar_queue[i].front().radar;
+                    velocity_radar_queue[i].pop();
+                    publishRadarData(radar_data_, publishers_[i]);
+                }
+                
+
+                if(tick_cnt % velocity_planner_period == 0) {
+                    velocity_radar_queue[i].push(TimedRadar(radar_data, tick_cnt));
+                }
+
+                
+                tick_cnt += 10;
+
+                if(tick_cnt >= lcm_period) {
+                    prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
+                    tick_cnt = 0;
+                }
+            }
+            else {
+              publishRadarData(radar_data, publishers_[i]);
+            }
+
+        });
    }
 
 }
 
+
+void RadarPublisher::GetDelayParameter() {
+    this->get_parameter_or("period/velocity_planner", velocity_planner_period, 30);
+    this->get_parameter_or("delay/velocity_planner", velocity_planner_delay , 100);
+
+    int lcm_all = lcm(velocity_planner_period, velocity_planner_delay);
+
+    lcm_period = lcm_all; 
+}
+
+
+int RadarPublisher::gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int RadarPublisher::lcm(int a, int b) {
+    return (a * b) / gcd(a, b);
+}
 
 void RadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &carla_radar_measurement, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher) {
     sensor_msgs::msg::PointCloud2 radar_msg;
@@ -137,6 +195,7 @@ void RadarPublisher::publishRadarData(const boost::shared_ptr<csd::RadarMeasurem
       offset += radar_msg.point_step;  
     }
     radar_msg.data = data;
+    std::cerr << "pub radar" << std::endl;
     publisher->publish(radar_msg);
  
  }

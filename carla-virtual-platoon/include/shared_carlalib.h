@@ -40,6 +40,7 @@
 #include <std_msgs/msg/int32.hpp>
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/msg/image.hpp> 
+#include <queue>
 namespace cc = carla::client;
 namespace cg = carla::geom;
 namespace csd = carla::sensor::data;

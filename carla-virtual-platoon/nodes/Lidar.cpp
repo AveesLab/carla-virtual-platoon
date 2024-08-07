@@ -8,56 +8,112 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     
     this->get_parameter_or("add_sensor/lidar_number", num_lidars_, 1);
-    this->get_parameter_or("carla/sync", sync_ , true);
+    this->get_parameter_or("carla/sync", sync_ , false);
+    this->get_parameter_or("carla/sync_with_delay", sync_with_delay, false);
+    
+    if(sync_with_delay) {
+        GetDelayParameter();
+    }
+
+    velocity_lidar_queue.resize(num_lidars_);
+    publishers_.resize(num_lidars_);
 
     for(int i=0; i<num_lidars_; ++i){
-      std::string index = std::to_string(i);
-      
-      this->get_parameter_or("lidar" + index + "/x",lidar_x,2.3f);
-      this->get_parameter_or("lidar" + index + "/y",lidar_y,0.0f);
-      this->get_parameter_or("lidar" + index + "/z",lidar_z,1.0f);
-      this->get_parameter_or("lidar" + index + "/pitch",lidar_pitch, 0.0f);
-      this->get_parameter_or("lidar" + index + "/yaw",lidar_yaw,0.0f);
-      this->get_parameter_or("lidar" + index + "/roll",lidar_roll,0.0f);
-      this->get_parameter_or("lidar" + index + "/sensor_tick",lidar_sensor_tick,std::string("0.1f"));
-      this->get_parameter_or("lidar" + index + "/rotation_frequency",lidar_rotation_frequency,std::string("30.0f"));
-      this->get_parameter_or("lidar" + index + "/horizontal_fov",lidar_horizontal_fov,std::string("30.0f"));
-      this->get_parameter_or("lidar" + index + "/upper_fov",lidar_upper_fov,std::string("0.0f"));
-      this->get_parameter_or("lidar" + index + "/lower_fov",lidar_lower_fov,std::string("0.0f"));
-      this->get_parameter_or("lidar" + index + "/points_per_second",lidar_points_per_second,std::string("30000"));
-      this->get_parameter_or("lidar" + index + "/range",lidar_range,std::string("30.0f"));
-      this->get_parameter_or("lidar" + index + "/topic_name",lidar_topic_name,std::string("carla/lidar" + index));
-      if(sync_) lidar_sensor_tick = "0.0f";
+        std::string index = std::to_string(i);
+        
+        this->get_parameter_or("lidar" + index + "/x",lidar_x,2.3f);
+        this->get_parameter_or("lidar" + index + "/y",lidar_y,0.0f);
+        this->get_parameter_or("lidar" + index + "/z",lidar_z,1.0f);
+        this->get_parameter_or("lidar" + index + "/pitch",lidar_pitch, 0.0f);
+        this->get_parameter_or("lidar" + index + "/yaw",lidar_yaw,0.0f);
+        this->get_parameter_or("lidar" + index + "/roll",lidar_roll,0.0f);
+        this->get_parameter_or("lidar" + index + "/sensor_tick",lidar_sensor_tick,std::string("0.1f"));
+        this->get_parameter_or("lidar" + index + "/rotation_frequency",lidar_rotation_frequency,std::string("30.0f"));
+        this->get_parameter_or("lidar" + index + "/horizontal_fov",lidar_horizontal_fov,std::string("30.0f"));
+        this->get_parameter_or("lidar" + index + "/upper_fov",lidar_upper_fov,std::string("0.0f"));
+        this->get_parameter_or("lidar" + index + "/lower_fov",lidar_lower_fov,std::string("0.0f"));
+        this->get_parameter_or("lidar" + index + "/points_per_second",lidar_points_per_second,std::string("30000"));
+        this->get_parameter_or("lidar" + index + "/range",lidar_range,std::string("30.0f"));
+        this->get_parameter_or("lidar" + index + "/topic_name",lidar_topic_name,std::string("carla/lidar" + index));
+        if(sync_ || sync_with_delay) lidar_sensor_tick = "0.0f";
 
-      auto publisher = this->create_publisher<sensor_msgs::msg::PointCloud2>(lidar_topic_name, custom_qos);
-      publishers_.push_back(publisher);
-  
-      auto lidar_bp = blueprint_library->Find("sensor.lidar.ray_cast");
-      assert(lidar_bp != nullptr);
+        auto publisher = this->create_publisher<sensor_msgs::msg::PointCloud2>(lidar_topic_name, custom_qos);
+        publishers_.push_back(publisher);
+    
+        auto lidar_bp = blueprint_library->Find("sensor.lidar.ray_cast");
+        assert(lidar_bp != nullptr);
 
-      auto lidar_bp_modifiable = *lidar_bp;
+        auto lidar_bp_modifiable = *lidar_bp;
 
-      lidar_bp_modifiable.SetAttribute("sensor_tick", lidar_sensor_tick);
-      lidar_bp_modifiable.SetAttribute("rotation_frequency",lidar_rotation_frequency);
-      lidar_bp_modifiable.SetAttribute("horizontal_fov", lidar_horizontal_fov);
-      lidar_bp_modifiable.SetAttribute("points_per_second", lidar_points_per_second);
-      lidar_bp_modifiable.SetAttribute("upper_fov", lidar_upper_fov);
-      lidar_bp_modifiable.SetAttribute("lower_fov", lidar_lower_fov);
-      lidar_bp_modifiable.SetAttribute("range", lidar_range);
-      lidar_bp_modifiable.SetAttribute("channels","1");
-  
-      auto lidar_transform = cg::Transform{cg::Location{lidar_x, lidar_y, lidar_z}, cg::Rotation{lidar_pitch, lidar_yaw, lidar_roll}}; // pitch, yaw, roll.
-      auto lidar_actor = world->SpawnActor(lidar_bp_modifiable, lidar_transform, actor.get());
-      auto lidar = boost::static_pointer_cast<cc::Sensor>(lidar_actor);
+        lidar_bp_modifiable.SetAttribute("sensor_tick", lidar_sensor_tick);
+        lidar_bp_modifiable.SetAttribute("rotation_frequency",lidar_rotation_frequency);
+        lidar_bp_modifiable.SetAttribute("horizontal_fov", lidar_horizontal_fov);
+        lidar_bp_modifiable.SetAttribute("points_per_second", lidar_points_per_second);
+        lidar_bp_modifiable.SetAttribute("upper_fov", lidar_upper_fov);
+        lidar_bp_modifiable.SetAttribute("lower_fov", lidar_lower_fov);
+        lidar_bp_modifiable.SetAttribute("range", lidar_range);
+        lidar_bp_modifiable.SetAttribute("channels","1");
+    
+        auto lidar_transform = cg::Transform{cg::Location{lidar_x, lidar_y, lidar_z}, cg::Rotation{lidar_pitch, lidar_yaw, lidar_roll}}; // pitch, yaw, roll.
+        auto lidar_actor = world->SpawnActor(lidar_bp_modifiable, lidar_transform, actor.get());
+        auto lidar = boost::static_pointer_cast<cc::Sensor>(lidar_actor);
 
-      lidar_sensors.push_back(lidar);
-  
-      lidar->Listen([this, i](auto data) {
-          auto lidar_data = boost::static_pointer_cast<carla::sensor::data::LidarMeasurement>(data);
-          assert(lidar_data != nullptr);
-          publishLidarData(lidar_data, publishers_[i]);
-      });
+        lidar_sensors.push_back(lidar);
+    
+        lidar->Listen([this, i](auto data) {
+            auto lidar_data = boost::static_pointer_cast<carla::sensor::data::LidarMeasurement>(data);
+            assert(lidar_data != nullptr);
+
+            static int prev_tick_cnt = 0;
+
+            if(sync_with_delay) {
+
+                if (!velocity_lidar_queue[i].empty() && (tick_cnt == 0 ? prev_tick_cnt - velocity_lidar_queue[i].front().timestamp == velocity_planner_delay : tick_cnt - velocity_lidar_queue[i].front().timestamp == velocity_planner_delay)) {
+                    auto lidar_data_ = velocity_lidar_queue[i].front().lidar;
+                    velocity_lidar_queue[i].pop();
+                    publishLidarData(lidar_data_, publishers_[i]);
+                }
+
+
+                if(tick_cnt % velocity_planner_period == 0) {
+                    velocity_lidar_queue[i].push(TimedLidar(lidar_data, tick_cnt));
+                }
+                tick_cnt += 10;
+
+                if(tick_cnt >= lcm_period) {
+                    prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
+                    tick_cnt = 0;
+                }
+            }
+            else {
+              publishLidarData(lidar_data, publishers_[i]);
+            }
+        });
+      }
+}
+
+
+void LidarPublisher::GetDelayParameter() {
+    this->get_parameter_or("period/velocity_planner", velocity_planner_period, 30);
+    this->get_parameter_or("delay/velocity_planner", velocity_planner_delay , 100);
+
+    int lcm_all = lcm(velocity_planner_period, velocity_planner_delay);
+
+    lcm_period = lcm_all; 
+}
+
+
+int LidarPublisher::gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
     }
+    return a;
+}
+
+int LidarPublisher::lcm(int a, int b) {
+    return (a * b) / gcd(a, b);
 }
 
 void LidarPublisher::publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &carla_lidar_measurement, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher) {

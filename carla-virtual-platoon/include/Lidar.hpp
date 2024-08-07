@@ -1,7 +1,14 @@
 #include "shared_carlalib.h"
 #include <boost/make_shared.hpp>
 #include <rclcpp/qos.hpp>
+#include <boost/shared_ptr.hpp>
 
+struct TimedLidar {
+    boost::shared_ptr<csd::LidarMeasurement> lidar;
+    int timestamp;
+
+    TimedLidar(boost::shared_ptr<csd::LidarMeasurement> lidar_data, int ts) : lidar(lidar_data), timestamp(ts) {}
+};
 
 class LidarPublisher : public rclcpp::Node {
 
@@ -21,8 +28,18 @@ private:
     carla::geom::Transform lidar_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> lidar_bp;
 
-    int num_lidars_;
     bool sync_ = false;
+    bool sync_with_delay = false;
+    void GetDelayParameter();
+    int gcd(int a, int b);
+    int lcm(int a, int b);
+    int lcm_period;
+    int tick_cnt = 0;
+    int velocity_planner_period = 30;
+    int velocity_planner_delay = 100;
+    std::vector<std::queue<TimedLidar>> velocity_lidar_queue;
+
+    int num_lidars_;
     float lidar_x;
     float lidar_y;
     float lidar_z;
