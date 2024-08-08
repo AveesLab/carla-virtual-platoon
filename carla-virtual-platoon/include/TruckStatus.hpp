@@ -14,7 +14,7 @@
 class TruckStatusPublisher : public rclcpp::Node {
 
 public:
-    TruckStatusPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,boost::shared_ptr<carla::client::Actor> actor);
+    TruckStatusPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,boost::shared_ptr<carla::client::Actor> actor, int trucknum_);
 
     float velocity_ = 0.f;
     float acceleration_ = 0.f;
@@ -26,6 +26,8 @@ public:
     bool check = false;
     float sotif_flag = 0.0f;
 private:
+    float sim_time = 0.0f;
+    int trucknum_;
     boost::shared_ptr<carla::client::Actor> actor_;
     rclcpp::TimerBase::SharedPtr timer_1ms_accel;
     rclcpp::TimerBase::SharedPtr timer_1ms_velocity;

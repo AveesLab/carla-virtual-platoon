@@ -13,7 +13,7 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
     this->get_parameter_or("add_sensor/radar_number", num_radars_, 3);
     this->get_parameter_or("carla/sync", sync_ , false);
     this->get_parameter_or("carla/sync_with_delay", sync_with_delay, false);
-    
+    std::cerr << sync_with_delay << std::endl;
     if(sync_with_delay) {
         GetDelayParameter();
     }
@@ -60,30 +60,31 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
         radar_sensors.push_back(radar);
 
         radar->Listen([this, i](auto data) {
+            std::unique_lock<std::mutex> lock(mutex_);
             auto radar_data = boost::static_pointer_cast<carla::sensor::data::RadarMeasurement>(data);
             assert(radar_data != nullptr);
             
             static int prev_tick_cnt = 0;
-            if(i == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
+            if(cnt == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
             if(sync_with_delay) {
 
                 if (!velocity_radar_queue[i].empty()) {
                     int time_diff = tick_cnt - velocity_radar_queue[i].front().timestamp;
-                    if(time_diff <0) time_diff += lcm_period;
+                    if(time_diff <= 0) time_diff += lcm_period;
 
                     if(time_diff == velocity_planner_delay) {
                         auto radar_data_ = velocity_radar_queue[i].front().radar;
-                        std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << std::endl;
+                        std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << " " << cnt << " " <<  std::endl;
                         velocity_radar_queue[i].pop();
                         publishRadarData(radar_data_, publishers_[i]);
                     }
-                    else std::cerr << i << " eopmtyytgtyeahearherh" << time_diff << " " << velocity_radar_queue[i].front().timestamp<< std::endl;
+                    else std::cerr << i << " no " << time_diff << " " << velocity_radar_queue[i].front().timestamp<< std::endl;
                 }
                 else std::cerr << i << " eopmty" << std::endl;
                 
 
                 if(tick_cnt % velocity_planner_period == 0) {
-                    std::cerr << i <<"  save radar" << tick_cnt << std::endl;
+                    //std::cerr << i <<"  save radar" << tick_cnt << std::endl;
                     velocity_radar_queue[i].push(TimedRadar(radar_data, tick_cnt));
                 }
 

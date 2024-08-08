@@ -27,7 +27,7 @@ private:
     boost::shared_ptr<carla::client::Actor> radar_actor;
     carla::geom::Transform radar_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> radar_bp;
-
+    std::mutex mutex_;
     bool sync_ = false;
     bool sync_with_delay = false;
     void GetDelayParameter();

@@ -1,6 +1,6 @@
 #include "TruckStatus.hpp"
 
-TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,boost::shared_ptr<carla::client::Actor> actor)
+TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,boost::shared_ptr<carla::client::Actor> actor, int trucknum_)
     : Node("truck_status_node", rclcpp::NodeOptions()
                .allow_undeclared_parameters(true)
            .automatically_declare_parameters_from_overrides(true)),Vehicle_(vehicle_) {
@@ -16,8 +16,8 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
     CutinFlagSubscriber_ = this->create_subscription<std_msgs::msg::Bool>("cut_in_flag", 10, std::bind(&TruckStatusPublisher::CutinFlagSubCallback, this, std::placeholders::_1));
     SotifSubscriber_ = this->create_subscription<std_msgs::msg::Bool>("front_camera/attribute", 10, std::bind(&TruckStatusPublisher::SotifSubCallback, this, std::placeholders::_1));
     gettimeofday(&init_, NULL);
-    timer_100ms_record = this->create_wall_timer(100ms, std::bind(&TruckStatusPublisher::TruckStatus_record_callback, this));
-
+    //timer_100ms_record = this->create_wall_timer(100ms, std::bind(&TruckStatusPublisher::TruckStatus_record_callback, this));
+    this->trucknum_ = trucknum_;
     IMUPublisher_ = this->create_publisher<ros2_msg::msg::IMU>("imu",qos);
     GnssPublisher_ = this->create_publisher<ros2_msg::msg::GNSS>("gnss",1);
     //IMU
@@ -77,6 +77,7 @@ void TruckStatusPublisher::publishIMUData(const boost::shared_ptr<csd::IMUMeasur
     IMUPublisher_->publish(msg);
     TruckStatusPublisher_accel_callback();
     TruckStatusPublisher_velocity_callback();
+    this->sim_time += 0.01f;
 }
 
 void TruckStatusPublisher::publishGnssData(const boost::shared_ptr<csd::GnssMeasurement> &carla_gnss_measurement) {
@@ -127,7 +128,7 @@ void TruckStatusPublisher::CutinFlagSubCallback(const std_msgs::msg::Bool::Share
   //std::cerr << "recv" << std::endl;
     bool data = msg->data;
     if(data) cut_in_flag = 1.0;
-    else cut_in_flag = 0.0;
+    else cut_in_flag = 0.0; 
 }
 
 void TruckStatusPublisher::SotifSubCallback(const std_msgs::msg::Bool::SharedPtr msg) {
@@ -158,7 +159,7 @@ void TruckStatusPublisher::recordData(struct timeval startTime){
     char buf[256] = {0x00,};
     static bool flag = false;
     double diff_time;
-    log_path_ = "/home/nvidia/platoon_ws/logfiles/";
+    log_path_ = "/home/nvidia/ros2_ws/logfiles/";
     std::ifstream read_file;
     std::ofstream write_file;
     if(!flag){

@@ -20,7 +20,7 @@ public:
         camera->Destroy();
     }
 private:
-
+    int cnt=0;
     int tmp;
     boost::shared_ptr<carla::client::Actor> actor_;
 //    void publishImage(const csd::Image &carla_image);

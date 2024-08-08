@@ -45,6 +45,91 @@ void SyncManager::TruckSizeSubCallback(const std_msgs::msg::Int32::SharedPtr msg
     std::cerr << "TruckSizeSubCallback : "<< msg->data << std::endl;
     unique_lock<mutex> lock(mutex_);
     this->size = msg->data;
+    truck_ids.resize(this->size);
+    trailer_ids.resize(this->size);
+}
+
+double SyncManager::GetDistanceBetweenActors(ActorPtr current, ActorPtr target) {
+    Transform target_transform = target->GetTransform();
+    Transform current_transform = current->GetTransform();
+
+    double extent_sum_x = 0.0;
+
+    if (boost::dynamic_pointer_cast<cc::Vehicle>(target) || boost::dynamic_pointer_cast<cc::Walker>(target)) {
+        //std::cerr << target->GetBoundingBox().extent.x <<"   " << current->GetBoundingBox().extent.x << std::endl;
+        extent_sum_x = target->GetBoundingBox().extent.x + current->GetBoundingBox().extent.x;
+    }
+
+    //double distance = target_transform.location.Distance(current_transform.location);
+    double distance = std::sqrt(std::pow(current_transform.location.x-target_transform.location.x,2));
+    //std::cerr << "truck1" << current_transform.location.x << "trailor0" << target_transform.location.x << std::endl;
+    distance -= extent_sum_x;
+    //std::cerr << distance << std::endl;
+    distance = std::max(0.0, distance) - 4.86f;
+
+    return distance;
+}
+
+void SyncManager::recordData() {
+    struct timeval currentTime;
+    double diff_time;
+    std::string log_path_ = "/home/nvidia/ros2_ws/logfiles/";
+
+    auto actor_list = world->GetActors();
+
+    gettimeofday(&currentTime, nullptr);
+    //double sim_time = currentTime.tv_sec + (currentTime.tv_usec / 1e6);
+
+    for (size_t i = 0; i < truck_ids.size(); ++i) {
+        unsigned int actor_id = truck_ids[i];
+        auto actor = actor_list->Find(actor_id);
+        if (actor != nullptr) {
+            auto vehicle = boost::dynamic_pointer_cast<cc::Vehicle>(actor);
+            if (vehicle != nullptr) {
+                // Get velocity and acceleration
+                Vector3D velocity = vehicle->GetVelocity();
+                Vector3D acceleration = vehicle->GetAcceleration();
+
+                // Calculate the length of the velocity and acceleration vectors
+                double velocity_length = std::sqrt(std::pow(velocity.x,2)  + std::pow(velocity.y,2) + std::pow(velocity.z,2)); 
+                double acceleration_length = acceleration.x;
+
+                // Placeholder for distance and flags (to be replaced with actual values)
+                float distance_ = 0.0f;
+                if (i > 0 && i - 1 < trailer_ids.size()) {
+                    auto trailer_actor = actor_list->Find(trailer_ids[i - 1]);
+                    if (trailer_actor != nullptr) {
+                        distance_ = GetDistanceBetweenActors(actor, trailer_actor);
+                        //std::cerr << distance_ << std::endl; 
+                    }
+                }
+                float cut_in_flag = 0.0f;
+                float sotif_flag = 0.0f;
+
+                // Generate filename using the index in v_id
+                std::string filename = "truck" + to_string(i + 1) + ".csv";
+                std::string file_path = log_path_ + filename;
+
+                // Check if file exists, if not, create and write header
+                std::ifstream read_file(file_path);
+                std::ofstream write_file;
+                if (read_file.fail()) { 
+                    write_file.open(file_path);
+                    write_file << "Time, ActorID, Velocity, Acceleration, Distance, cut_in_flag, sotif_flag" << std::endl;
+                }
+                read_file.close();
+
+                // Format and write data
+                char buf[256] = {0x00,};
+                sprintf(buf, "%.2f, %u, %.3f, %.3f, %.3f, %.3f, %.3f", 
+                        sim_time, actor_id, velocity_length, acceleration_length, distance_, cut_in_flag, sotif_flag);
+
+                write_file.open(file_path, std::ios::out | std::ios::app);
+                write_file << buf << std::endl;
+                write_file.close();
+            }
+        }
+    }
 }
 
 
@@ -57,13 +142,13 @@ void SyncManager::RegistrationSubCallback(const std_msgs::msg::Int32::SharedPtr 
 
 void SyncManager::SyncThrottleSubCallback(const std_msgs::msg::Int32::SharedPtr msg) {
     unique_lock<mutex> lock(mutex_);
-    std::cerr << "throttle " << std::endl;
+    //std::cerr << "throttle " << std::endl;
     sync_throttle[msg->data] = true;
 }
 
 void SyncManager::SyncSteerSubCallback(const std_msgs::msg::Int32::SharedPtr msg) {
     unique_lock<mutex> lock(mutex_);
-    std::cerr << "steer" << std::endl;
+    //std::cerr << "steer" << std::endl;
     sync_steer[msg->data] = true;
 }
 
@@ -74,9 +159,9 @@ bool SyncManager::check_register() {
     for(int i = 0; i<size; i++) {
         if(registration_[i] == false) return false;
     }
-    std::cerr << "tick for register " << std::endl;
-    world->Tick(time_);    
+    //std::cerr << "tick for register " << std::endl;
     if(cnt == 0) {
+        world->Tick(time_);    
         cnt = 1;
         for(int i = 0; i<size; i++) {
             if(registration_[i] == true) registration_[i] = false;
@@ -86,24 +171,57 @@ bool SyncManager::check_register() {
     else if(cnt == 1) {
         registered = true;
         std::cerr << "All registered" << std::endl;
+        world->Tick(time_);  
         return true;
     }
 }
 
+void SyncManager::FindAllTruck() {
+    for(int i =0; i<this->size;i++) {
+        std::string truck_name = "truck" + std::to_string(i);
+        std::string trailer_name = "trailer" + std::to_string(i);
+        auto actor_list = world->GetActors();
+        for (auto iter = actor_list->begin(); iter != actor_list->end(); ++iter) {
+            ActorPtr actor = *iter;
+            ActorId actor_id = actor->GetId();
+            if (actor->GetTypeId().front() == 'v') {
+              
+                for (auto&& attribute: actor->GetAttributes()) {
+                  if (attribute.GetValue() == truck_name) {
+                      unsigned int truck_id = actor_id;
+                      truck_ids[i] = truck_id;
+                  }
+                  else if (attribute.GetValue() == trailer_name) {
+                      unsigned int trailer_id = actor_id;
+                      trailer_ids[i] = trailer_id; 
+                  }
+                }
+            }
+        } 
+
+    }
+
+
+}
+
 bool SyncManager::sync_received() {
     unique_lock<mutex> lock(mutex_);
-    for(int i = 0; i<size; i++) {
-        if(sync_throttle[i] == false) {
-            //std::cerr << "throttle " << i << std::endl;
-            return false;
+    // sync_throttle 배열의 모든 원소가 true인지 확인
+    for (int i = 0; i < size; i++) {
+        if (sync_throttle[i] == false) {
+            return false; // 하나라도 false면 false 반환
         }
     }
-    for(int i = 0; i<size; i++) {
-        if(sync_steer[i] == false) {
-            //std::cerr << "steer " << i << std::endl;
-            return false;
+
+    // sync_steer 배열의 모든 원소가 true인지 확인
+    for (int i = 0; i < size; i++) {
+        if (sync_steer[i] == false) {
+            return false; // 하나라도 false면 false 반환
         }
     }
+
+
+    //all received
     for(int i = 0; i<size; i++) {
         sync_throttle[i] = false;
     }
@@ -122,9 +240,12 @@ void SyncManager::managerInThread()
         if(check_register()) {
             if(sync_received() && first) {
                 std::cerr << "tick" << std::endl;
+                recordData();
                 world->Tick(time_);
+                sim_time += 0.01f;
             }
             if(!first) {
+                FindAllTruck();
                 first = true;
             }
         }

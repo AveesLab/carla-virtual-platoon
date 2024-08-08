@@ -50,7 +50,7 @@
 
 /**:  
   ros__parameters:
-    radar0/x : 2.3
+    radar0/x : 3.0
     radar0/y : 0.0
     radar0/z : 1.5
     radar0/pitch : 0.0 
@@ -63,7 +63,7 @@
     radar0/range : "60.0f"
     radar0/topic_name: "radar0" #front radar
 
-    radar1/x : 1.9
+    radar1/x : 2.45
     radar1/y : -1.4
     radar1/z : 0.7
     radar1/pitch : 0.0 

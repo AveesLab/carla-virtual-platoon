@@ -138,13 +138,14 @@ void generate_truck(int truck_num, std::string map_name) {
     std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
     auto vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
     register_to_manager(truck_num);
+    sleep(5);
     if(truck_num == 0) {
         rclcpp::executors::MultiThreadedExecutor executor; 
         auto node_camera = std::make_shared<CameraPublisher>(actor_truck);
         auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
         auto node_lidar = std::make_shared<LidarPublisher>(actor_truck);
         auto node_control = std::make_shared<TruckControl>(vehicle_truck,truck_num);
-        auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
+        auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck,truck_num);
         //auto node_spectator = std::make_shared<Spectator>(actor_truck);
         auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
         
@@ -168,7 +169,7 @@ void generate_truck(int truck_num, std::string map_name) {
         auto node_radar = std::make_shared<RadarPublisher>(actor_truck);
         auto node_lidar = std::make_shared<LidarPublisher>(actor_truck);
         auto node_control = std::make_shared<TruckControl>(vehicle_truck,truck_num);
-        auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck);
+        auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck,truck_num);
         auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
         
         executor.add_node(node_camera);
@@ -217,7 +218,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Map Name : " << map_name << std::endl;            
             notify_numtrucks_to_manager(numtrucks);  
         }
-
+        if(truck_num > 0) sleep(1);
         connect_to_carla(truck_num);
         generate_truck(truck_num,map_name);
 

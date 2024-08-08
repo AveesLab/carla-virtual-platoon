@@ -63,16 +63,16 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
             assert(image != nullptr);
 
             static int prev_tick_cnt = 0;
-             
+            //if(cnt == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
             if(sync_with_delay) {
                
                 if (!velocity_image_queue[i].empty()) {
                     int time_diff = tick_cnt - velocity_image_queue[i].front().timestamp;
-                    if(time_diff < 0) time_diff += lcm_period;
+                    if(time_diff <= 0) time_diff += lcm_period;
 
                     if(time_diff == velocity_planner_delay) {
                         auto image_ = velocity_image_queue[i].front().image;
-                        std::cerr << "pub to yolo" << " " << velocity_image_queue[i].front().timestamp << std::endl;
+                        std::cerr << "pub to yolo" << " " << velocity_image_queue[i].front().timestamp << " " << time_diff<< " "<< tick_cnt<< std::endl;
                         velocity_image_queue[i].pop();
                         wait_for_velocity(true);
                         publishImage(*image_, publishers_[i]);
@@ -91,7 +91,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
                
                 if (i == 0 && !path_image_queue.empty()) {
                     int time_diff = tick_cnt - path_image_queue.front().timestamp;
-                    if(time_diff < 0) time_diff += lcm_period;
+                    if(time_diff <= 0) time_diff += lcm_period;
 
                     if(time_diff == path_planner_delay) {
                         auto image_ = path_image_queue.front().image;
@@ -117,15 +117,16 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
                     path_image_queue.push(TimedImage{image, tick_cnt});
                 }
 
+                cnt++;
                 
-                if(i == num_cameras_-1) {
+                if(cnt == num_cameras_) {
                     prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
                     tick_cnt += 10;
 
                     if(tick_cnt >= lcm_period) {
                         tick_cnt = 0;
                     }
-
+                    cnt = 0;
                 }
 
             } 

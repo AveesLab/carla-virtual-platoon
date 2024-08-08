@@ -27,5 +27,8 @@
 #include <carla/rpc/EpisodeSettings.h>
 
 namespace cc = carla::client;
+using ActorId = carla::ActorId;
+
+using namespace carla::geom;
 
 #define EXPECT_TRUE(pred) if (!(pred)) { throw std::runtime_error(#pred); }

@@ -10,6 +10,10 @@
 #include <shared_carlalib.h>
 #include <rclcpp/qos.hpp>
 #include "std_msgs/msg/int32.hpp"
+#include <thread>
+#include <string>
+using namespace carla::traffic_manager;
+
 using namespace std;
 class SyncManager : public rclcpp::Node {
 
@@ -30,11 +34,17 @@ private:
     bool registered = false;
     int size = 0;
     int cnt = 0;
+    float sim_time = 0.0f;
     std::vector<bool> registration_;
     std::vector<bool> sync_throttle;
     std::vector<bool> sync_steer;
     std::thread manager_Thread;
+    vector<unsigned int> truck_ids;
+    vector<unsigned int> trailer_ids;
     void managerInThread();
+    void recordData();
+    void FindAllTruck();
+    double GetDistanceBetweenActors(ActorPtr current, ActorPtr target);
 
 
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr TruckSizeSubscriber_;
