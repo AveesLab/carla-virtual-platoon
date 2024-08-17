@@ -75,7 +75,7 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
                 }
 
 
-                if(tick_cnt % velocity_planner_period == 0) {
+                if(velocity_planner_period == 0 || tick_cnt % velocity_planner_period == 0) {
                     velocity_lidar_queue[i].push(TimedLidar(lidar_data, tick_cnt));
                 }
                 if(i == num_lidars_-1) {

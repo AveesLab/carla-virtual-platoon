@@ -15,7 +15,10 @@ class TruckStatusPublisher : public rclcpp::Node {
 
 public:
     TruckStatusPublisher(boost::shared_ptr<carla::client::Vehicle> vehicle_,boost::shared_ptr<carla::client::Actor> actor, int trucknum_);
-
+    ~TruckStatusPublisher() {
+        imu->Destroy();
+        gnss->Destroy();
+    }
     float velocity_ = 0.f;
     float acceleration_ = 0.f;
     float distance_ = 0.f;

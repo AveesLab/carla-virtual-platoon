@@ -26,13 +26,14 @@ TruckStatusPublisher::TruckStatusPublisher(boost::shared_ptr<carla::client::Vehi
 }
 
 void TruckStatusPublisher::generate_imu() {
-    imu_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.imu")));
+    auto imu_bp = blueprint_library->Find("sensor.other.imu");
+    auto imu_bp_modifiable = *imu_bp;
     assert(imu_bp != nullptr);
-    imu_bp->SetAttribute("sensor_tick", "0.0");
+    imu_bp_modifiable.SetAttribute("sensor_tick", "0.0");
 
 
     imu_transform = cg::Transform{ cg::Location{}, cg::Rotation{}}; // pitch, yaw, roll.
-    imu_actor = world->SpawnActor(*imu_bp, imu_transform, actor_.get());
+    imu_actor = world->SpawnActor(imu_bp_modifiable, imu_transform, actor_.get());
     imu = boost::static_pointer_cast<cc::Sensor>(imu_actor);
 
     imu->Listen([this](auto data) {
@@ -43,13 +44,14 @@ void TruckStatusPublisher::generate_imu() {
 }
 
 void TruckStatusPublisher::generate_gnss() {
-    gnss_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.gnss")));
+    auto gnss_bp = blueprint_library->Find("sensor.other.gnss");
     assert(gnss_bp != nullptr);
-    gnss_bp->SetAttribute("sensor_tick", "0.0");
+    auto gnss_bp_modifiable = *gnss_bp;
+    gnss_bp_modifiable.SetAttribute("sensor_tick", "0.0");
 
 
     gnss_transform = cg::Transform{ cg::Location{}, cg::Rotation{}}; // pitch, yaw, roll.
-    gnss_actor = world->SpawnActor(*gnss_bp, gnss_transform, actor_.get());
+    gnss_actor = world->SpawnActor(gnss_bp_modifiable, gnss_transform, actor_.get());
     gnss = boost::static_pointer_cast<cc::Sensor>(gnss_actor);
 
     gnss->Listen([this](auto data) {

@@ -15,7 +15,9 @@ class RadarPublisher : public rclcpp::Node {
 public:
     RadarPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~RadarPublisher(){
-        radar->Destroy();
+        for(auto rad : radar_sensors) {
+            rad->Destroy();
+        }
   }
 private:
     void publishRadarData(const boost::shared_ptr<csd::RadarMeasurement> &radar_data, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher);

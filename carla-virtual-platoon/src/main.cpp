@@ -10,13 +10,15 @@
 #include <thread>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <csignal>  // for std::signal
 
 std::string host = "localhost";
 uint16_t port = 2000u;
 cc::Client *client;
 cc::World *world;
 carla::SharedPtr<carla::client::BlueprintLibrary> blueprint_library;
-
+boost::shared_ptr<carla::client::Vehicle> vehicle_trailer;
+boost::shared_ptr<carla::client::Vehicle> vehicle_truck;
 
 /// Pick a random element from @a range.
 template <typename RangeT, typename RNG>
@@ -24,6 +26,12 @@ static auto &RandomChoice(const RangeT &range, RNG &&generator) {
   EXPECT_TRUE(range.size() > 0u);
   std::uniform_int_distribution<size_t> dist{0u, range.size() - 1u};
   return range[dist(std::forward<RNG>(generator))];
+}
+void signal_handler(int signal) {
+    if (signal == SIGINT) {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Ctrl+C caught, shutting down...");
+        rclcpp::shutdown();
+    }
 }
 
 carla::geom::Location GetTruckLocation(int truck_num, std::string map_name) {
@@ -130,13 +138,15 @@ void generate_truck(int truck_num, std::string map_name) {
     // Spawn the trailer
     auto actor_trailer = world->SpawnActor(blueprint_trailer, transform);
     std::cout << "Spawned " << actor_trailer->GetDisplayId() << '\n';
-    auto vehicle_trailer = boost::static_pointer_cast<cc::Vehicle>(actor_trailer);   
+    vehicle_trailer = boost::static_pointer_cast<cc::Vehicle>(actor_trailer);   
 
     // Spawn the truck
     transform.location += 5.2f * transform.GetForwardVector(); 
     auto actor_truck = world->SpawnActor(blueprint_truck, transform);
     std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
-    auto vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
+    vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
+
+
     register_to_manager(truck_num);
     sleep(5);
     if(truck_num == 0) {
@@ -148,20 +158,17 @@ void generate_truck(int truck_num, std::string map_name) {
         auto node_status = std::make_shared<TruckStatusPublisher>(vehicle_truck,actor_truck,truck_num);
         //auto node_spectator = std::make_shared<Spectator>(actor_truck);
         auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
-        
+
+
         executor.add_node(node_camera);
         executor.add_node(node_radar);
         executor.add_node(node_lidar);
-        executor.add_node(node_obu);
         //executor.add_node(node_spectator);
         executor.add_node(node_control);
         executor.add_node(node_status);
-
+        executor.add_node(node_obu);
         register_to_manager(truck_num);
-        executor.spin(); 
-
-        vehicle_truck->Destroy();
-        vehicle_trailer->Destroy();    
+        executor.spin();  
     }
     else {
         rclcpp::executors::MultiThreadedExecutor executor; 
@@ -173,24 +180,26 @@ void generate_truck(int truck_num, std::string map_name) {
         auto node_obu = std::make_shared<TruckOBU>(actor_truck,truck_num);
         
         executor.add_node(node_camera);
-        executor.add_node(node_radar);
+        executor.add_node(node_radar);      
         executor.add_node(node_lidar);
         executor.add_node(node_obu);
         executor.add_node(node_control);
         executor.add_node(node_status);
 
         register_to_manager(truck_num);
-        executor.spin(); 
-
-        vehicle_truck->Destroy();
-        vehicle_trailer->Destroy();   
+        executor.spin();  
+    
     } 
+
+
 }
 
 
 int main(int argc, char *argv[]) {
     try {
         rclcpp::init(argc, argv);
+
+        //std::signal(SIGINT, signal_handler);  // Register signal handler
 
         int truck_num = 1; // Default value
         std::string map_name = "IHP"; //Default map
@@ -220,9 +229,10 @@ int main(int argc, char *argv[]) {
         }
         if(truck_num > 0) sleep(1);
         connect_to_carla(truck_num);
-        generate_truck(truck_num,map_name);
-
+        generate_truck(truck_num,map_name);  
         rclcpp::shutdown();
+        vehicle_truck->Destroy();
+        vehicle_trailer->Destroy(); 
     } 
     catch (const std::exception& e) {
         std::cerr << "Unhandled Exception: " << e.what() << std::endl;

@@ -12,7 +12,10 @@ class TruckOBU : public rclcpp::Node {
 public:
     TruckOBU(boost::shared_ptr<carla::client::Actor> actor,int truck_num);
     ~TruckOBU() {
+        //obu->Stop();
         obu->Destroy();
+
+        obu_custom->Destroy();
     }
 private:
     void publishV2X(const unsigned int stationid_);
@@ -32,6 +35,7 @@ private:
     void TimeGapSubCallback(const std_msgs::msg::Float32::SharedPtr msg);
 
     boost::shared_ptr<carla::client::Sensor> obu;
+    boost::shared_ptr<carla::client::Sensor> obu_custom;
     boost::shared_ptr<carla::client::Actor> obu_actor;
     carla::geom::Transform obu_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> obu_bp;
@@ -50,6 +54,7 @@ private:
     bool caution_mode_lane2 = false;
     bool lane_change_flag = false;
     float timegap = 0.5f;
+    int truck_num_;
 
 
 };

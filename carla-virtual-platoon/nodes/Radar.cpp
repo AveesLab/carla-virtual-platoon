@@ -83,7 +83,7 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
                 else std::cerr << i << " eopmty" << std::endl;
                 
 
-                if(tick_cnt % velocity_planner_period == 0) {
+                if(velocity_planner_period == 0 || tick_cnt % velocity_planner_period == 0) {
                     //std::cerr << i <<"  save radar" << tick_cnt << std::endl;
                     velocity_radar_queue[i].push(TimedRadar(radar_data, tick_cnt));
                 }

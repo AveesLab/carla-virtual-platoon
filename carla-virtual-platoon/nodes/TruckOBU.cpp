@@ -7,7 +7,7 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
-    timer_ = this->create_wall_timer(100ms, std::bind(&TruckOBU::timerCallback, this));
+    //timer_ = this->create_wall_timer(100ms, std::bind(&TruckOBU::timerCallback, this));
 
 
     v2xpublisher_ = this->create_publisher<ros2_msg::msg::V2XCAM>("v2xcam", 1);
@@ -19,15 +19,17 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
     LaneChangeSubscriber_ = this->create_subscription<std_msgs::msg::Bool>("lane_change_flag", 10, std::bind(&TruckOBU::LaneChangeSubCallback, this, std::placeholders::_1));
     TimeGapSubscriber_ = this->create_subscription<std_msgs::msg::Float32>("timegap", 10, std::bind(&TruckOBU::TimeGapSubCallback, this, std::placeholders::_1));
 
-
-    obu_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.v2x")));
+    truck_num_ = truck_num;
+    auto obu_bp = blueprint_library->Find("sensor.other.v2x");
     assert(obu_bp != nullptr);
-    obu_bp->SetAttribute("path_loss_model", "geometric");
-    obu_bp->SetAttribute("gen_cam_max","0.1");
-    obu_bp->SetAttribute("scenario","highway");
+    auto obu_bp_modifiable = *obu_bp;
+    
+    obu_bp_modifiable.SetAttribute("path_loss_model", "geometric");
+    obu_bp_modifiable.SetAttribute("gen_cam_max","0.1");
+    obu_bp_modifiable.SetAttribute("scenario","highway");
 
-    obu_transform = cg::Transform{ cg::Location{}, cg::Rotation{}}; // pitch, yaw, roll.
-    obu_actor = world->SpawnActor(*obu_bp, obu_transform, actor.get());
+    obu_transform = cg::Transform(); // pitch, yaw, roll.
+    obu_actor = world->SpawnActor(obu_bp_modifiable, obu_transform, actor.get());
     obu = boost::static_pointer_cast<cc::Sensor>(obu_actor);
 
     //ICRA
@@ -76,13 +78,15 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
     });
 
 
-    v2x_custom_bp = boost::shared_ptr<carla::client::ActorBlueprint>(const_cast<carla::client::ActorBlueprint*>(blueprint_library->Find("sensor.other.v2x_custom")));
+    auto v2x_custom_bp = blueprint_library->Find("sensor.other.v2x_custom");
     assert(v2x_custom_bp != nullptr);
-    v2x_custom_bp->SetAttribute("path_loss_model", "geometric");
-    v2x_custom_bp->SetAttribute("scenario","highway");
+    auto v2x_custom_bp_modifiable = *v2x_custom_bp;
+    v2x_custom_bp_modifiable.SetAttribute("path_loss_model", "geometric");
+    v2x_custom_bp_modifiable.SetAttribute("scenario","highway");
 
     v2x_custom_transform = cg::Transform{ cg::Location{}, cg::Rotation{}}; // pitch, yaw, roll.
-    v2x_custom_actor = world->SpawnActor(*v2x_custom_bp, v2x_custom_transform, actor.get());
+    v2x_custom_actor = world->SpawnActor(v2x_custom_bp_modifiable, v2x_custom_transform, actor.get());
+    obu_custom = boost::static_pointer_cast<cc::Sensor>(v2x_custom_actor);
     v2x_custom = boost::static_pointer_cast<cc::ServerSideSensor>(v2x_custom_actor);
 
     v2x_custom->Listen([this](auto data) {
@@ -127,6 +131,7 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
             v2xcustom_publisher_->publish(msg_);
         }
     });
+    
 }
 
 void TruckOBU::timerCallback() {

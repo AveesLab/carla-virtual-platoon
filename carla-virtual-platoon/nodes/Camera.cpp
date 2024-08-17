@@ -57,6 +57,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
         auto camera = boost::static_pointer_cast<cc::Sensor>(camera_actor);
 
         camera_sensors.push_back(camera);
+        camera_actors.push_back(camera_actor);
   
         camera->Listen([this, i](auto data) {
             auto image = boost::static_pointer_cast<csd::Image>(data);
@@ -109,11 +110,11 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
                 }
                 
 
-                if(tick_cnt % velocity_planner_period == 0) {
+                if( velocity_planner_period == 0 || tick_cnt % velocity_planner_period == 0) {
                     velocity_image_queue[i].push(TimedImage{image, tick_cnt});
                 }
 
-                if(i == 0 && tick_cnt % path_planner_period == 0) {
+                if(i == 0 && (path_planner_period == 0 || tick_cnt % path_planner_period == 0)) {
                     path_image_queue.push(TimedImage{image, tick_cnt});
                 }
 

@@ -15,7 +15,9 @@ class LidarPublisher : public rclcpp::Node {
 public:
     LidarPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~LidarPublisher(){
-        lidar->Destroy();
+        for(auto lid  :lidar_sensors) {
+            lid->Destroy();
+        }
   }
 private:
     void publishLidarData(const boost::shared_ptr<csd::LidarMeasurement> &lidar_data, rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher);

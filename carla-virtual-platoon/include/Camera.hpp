@@ -17,7 +17,9 @@ class CameraPublisher : public rclcpp::Node {
 public:
     CameraPublisher(boost::shared_ptr<carla::client::Actor> actor);
     ~CameraPublisher() {
-        camera->Destroy();
+        for(auto cam : camera_actors) {
+            cam->Destroy();
+        }
     }
 private:
     int cnt=0;
@@ -31,6 +33,7 @@ private:
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr WaitVelPublisher;
     std::vector<rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr> publishers_;
     std::vector<boost::shared_ptr<cc::Sensor>> camera_sensors; 
+    std::vector<boost::shared_ptr<cc::Actor>> camera_actors; 
 
 
     boost::shared_ptr<carla::client::Sensor> camera;
