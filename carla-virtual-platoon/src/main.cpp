@@ -37,6 +37,19 @@ void signal_handler(int signal) {
 carla::geom::Location GetTruckLocation(int truck_num, std::string map_name) {
     float x = 0.0f , y = 0.0f ,z =0.0f;
     if (truckLocations.find(map_name) != truckLocations.end() && truckLocations[map_name].find(truck_num) != truckLocations[map_name].end()) {
+        x = truckLocations[map_name][truck_num][0]+5.0f;
+        y = truckLocations[map_name][truck_num][1];
+        z = truckLocations[map_name][truck_num][2];
+    } else {
+        throw std::runtime_error("Invalid map name or truck index for location.");
+    }
+
+    return carla::geom::Location(x,y,z);
+}
+
+carla::geom::Location GetTrailerLocation(int truck_num, std::string map_name) {
+    float x = 0.0f , y = 0.0f ,z =0.0f;
+    if (truckLocations.find(map_name) != truckLocations.end() && truckLocations[map_name].find(truck_num) != truckLocations[map_name].end()) {
         x = truckLocations[map_name][truck_num][0];
         y = truckLocations[map_name][truck_num][1];
         z = truckLocations[map_name][truck_num][2];
@@ -133,18 +146,23 @@ void generate_truck(int truck_num, std::string map_name) {
 
     carla::geom::Location TruckLocation = GetTruckLocation(truck_num,map_name);
     carla::geom::Rotation TruckRotation = GetTruckRotation(truck_num,map_name);
-    carla::geom::Transform transform(TruckLocation,TruckRotation);
+    carla::geom::Transform Trucktransform(TruckLocation,TruckRotation);
+
+    carla::geom::Location TrailerLocation = GetTrailerLocation(truck_num,map_name);
+    carla::geom::Rotation TrailerRotation = GetTruckRotation(truck_num,map_name);
+    carla::geom::Transform Trailertransform(TrailerLocation,TrailerRotation);
     
+
+    // Spawn the truck
+    //transform.location += 5.2f * transform.GetForwardVector(); 
+    auto actor_truck = world->SpawnActor(blueprint_truck, Trucktransform);
+    std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
+    vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
     // Spawn the trailer
-    auto actor_trailer = world->SpawnActor(blueprint_trailer, transform);
+    auto actor_trailer = world->SpawnActor(blueprint_trailer, Trailertransform);
     std::cout << "Spawned " << actor_trailer->GetDisplayId() << '\n';
     vehicle_trailer = boost::static_pointer_cast<cc::Vehicle>(actor_trailer);   
 
-    // Spawn the truck
-    transform.location += 5.2f * transform.GetForwardVector(); 
-    auto actor_truck = world->SpawnActor(blueprint_truck, transform);
-    std::cout << "Spawned " << actor_truck->GetDisplayId() << '\n';
-    vehicle_truck = boost::static_pointer_cast<cc::Vehicle>(actor_truck);
 
 
     register_to_manager(truck_num);
