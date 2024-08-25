@@ -7,7 +7,7 @@ TruckOBU::TruckOBU(boost::shared_ptr<carla::client::Actor> actor, int truck_num)
 
     rclcpp::QoS custom_qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
     custom_qos.best_effort();
-    //timer_ = this->create_wall_timer(100ms, std::bind(&TruckOBU::timerCallback, this));
+    timer_ = this->create_wall_timer(100ms, std::bind(&TruckOBU::timerCallback, this));
 
 
     v2xpublisher_ = this->create_publisher<ros2_msg::msg::V2XCAM>("v2xcam", 1);

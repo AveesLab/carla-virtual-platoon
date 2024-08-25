@@ -58,6 +58,8 @@ def generate_launch_description():
         description='MapName'
     )
 
+
+
     return LaunchDescription([
         declare_num_trucks,
         declare_map_name,

@@ -103,6 +103,7 @@ void notify_numtrucks_to_manager(int numtrucks_) {
 
 void connect_to_carla(int truck_num) {
     //Connecting to CARLA server;
+    std::cerr << truck_num << " Truck connecting to CARLA server" << '\n';
     client = new cc::Client(host, port);
     client->SetTimeout(40s);
     std::cerr << truck_num << " Truck connected to CARLA server" << '\n';
@@ -248,9 +249,9 @@ int main(int argc, char *argv[]) {
         if(truck_num > 0) sleep(1);
         connect_to_carla(truck_num);
         generate_truck(truck_num,map_name);  
-        rclcpp::shutdown();
         vehicle_truck->Destroy();
         vehicle_trailer->Destroy(); 
+        rclcpp::shutdown();
     } 
     catch (const std::exception& e) {
         std::cerr << "Unhandled Exception: " << e.what() << std::endl;

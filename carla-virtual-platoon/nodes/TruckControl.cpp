@@ -31,7 +31,7 @@ void TruckControl::SteerSubCallback(const std_msgs::msg::Float32::SharedPtr msg)
         std_msgs::msg::Int32 msg;
         msg.data = this->trucknum;
         SyncSteerPublisher_->publish(msg);
-        std::cout << "sync pub" << std::endl;     
+        //std::cout << "sync pub" << std::endl;     
     }
 }
 
@@ -52,6 +52,6 @@ void TruckControl::VelocitySubCallback(const std_msgs::msg::Float32::SharedPtr m
         std_msgs::msg::Int32 msg;
         msg.data = this->trucknum;
         SyncThrottlePublisher_->publish(msg);
-        std::cout << "throttle pub" << std::endl;     
+        //std::cout << "throttle pub" << std::endl;     
     }
 }

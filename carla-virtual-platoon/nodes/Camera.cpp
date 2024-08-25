@@ -73,7 +73,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
 
                     if(time_diff == velocity_planner_delay) {
                         auto image_ = velocity_image_queue[i].front().image;
-                        std::cerr << "pub to yolo" << " " << velocity_image_queue[i].front().timestamp << " " << time_diff<< " "<< tick_cnt<< std::endl;
+                        //std::cerr << "pub to yolo" << " " << velocity_image_queue[i].front().timestamp << " " << time_diff<< " "<< tick_cnt<< std::endl;
                         velocity_image_queue[i].pop();
                         wait_for_velocity(true);
                         publishImage(*image_, publishers_[i]);
@@ -96,7 +96,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
 
                     if(time_diff == path_planner_delay) {
                         auto image_ = path_image_queue.front().image;
-                        std::cerr << "pub to lane" << " " << path_image_queue.front().timestamp << std::endl;
+                        //std::cerr << "pub to lane" << " " << path_image_queue.front().timestamp << std::endl;
                         path_image_queue.pop();
                         wait_for_lane(true);
                         publishImage(*image_, LaneImagePublisher);

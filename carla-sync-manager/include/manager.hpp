@@ -10,6 +10,7 @@
 #include <shared_carlalib.h>
 #include <rclcpp/qos.hpp>
 #include "std_msgs/msg/int32.hpp"
+#include "std_msgs/msg/string.hpp"
 #include <thread>
 #include <string>
 using namespace carla::traffic_manager;
@@ -45,7 +46,7 @@ private:
     void recordData();
     void FindAllTruck();
     double GetDistanceBetweenActors(ActorPtr current, ActorPtr target);
-
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr ShutdownPublisher_;
 
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr TruckSizeSubscriber_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr RegistrationSubscriber_;

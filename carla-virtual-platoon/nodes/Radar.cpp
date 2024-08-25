@@ -65,7 +65,7 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
             assert(radar_data != nullptr);
             
             static int prev_tick_cnt = 0;
-            if(cnt == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
+            //if(cnt == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
             if(sync_with_delay) {
 
                 if (!velocity_radar_queue[i].empty()) {
@@ -74,13 +74,13 @@ RadarPublisher::RadarPublisher(boost::shared_ptr<carla::client::Actor> actor)
 
                     if(time_diff == velocity_planner_delay) {
                         auto radar_data_ = velocity_radar_queue[i].front().radar;
-                        std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << " " << cnt << " " <<  std::endl;
+                        //std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << " " << cnt << " " <<  std::endl;
                         velocity_radar_queue[i].pop();
                         publishRadarData(radar_data_, publishers_[i]);
                     }
-                    else std::cerr << i << " no " << time_diff << " " << velocity_radar_queue[i].front().timestamp<< std::endl;
+                    //else std::cerr << i << " no " << time_diff << " " << velocity_radar_queue[i].front().timestamp<< std::endl;
                 }
-                else std::cerr << i << " eopmty" << std::endl;
+                //else std::cerr << i << " eopmty" << std::endl;
                 
 
                 if(velocity_planner_period == 0 || tick_cnt % velocity_planner_period == 0) {

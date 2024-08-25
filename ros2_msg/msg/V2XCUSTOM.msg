@@ -1,6 +1,0 @@
-std_msgs/Header header
-bool emergency_flag
-bool caution_mode_lane1
-bool caution_mode_lane2
-bool lane_change_flag
-float32 timegap

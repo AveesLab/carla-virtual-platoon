@@ -1,5 +1,5 @@
 #include "manager.hpp"
-
+const float epsilon = 0.0001f; 
 /// Pick a random element from @a range.
 template <typename RangeT, typename RNG>
 static auto &RandomChoice(const RangeT &range, RNG &&generator) {
@@ -19,6 +19,7 @@ SyncManager::SyncManager()
             RegistrationSubscriber_ = this->create_subscription<std_msgs::msg::Int32>("/registration", 10, std::bind(&SyncManager::RegistrationSubCallback, this, std::placeholders::_1));
             SyncThrottleSubscriber_ = this->create_subscription<std_msgs::msg::Int32>("/sync_throttle", 10, std::bind(&SyncManager::SyncThrottleSubCallback, this, std::placeholders::_1));
             SyncSteerSubscriber_ = this->create_subscription<std_msgs::msg::Int32>("/sync_steer", 10, std::bind(&SyncManager::SyncSteerSubCallback, this, std::placeholders::_1));
+            ShutdownPublisher_ = this->create_publisher<std_msgs::msg::String>("/shutdown_topic",10);
             isNodeRunning_ = true;
 
             settings = world->GetSettings();   
@@ -38,6 +39,28 @@ SyncManager::~SyncManager(void)
     manager_Thread.join();
     settings.synchronous_mode = false;
     world->ApplySettings(settings,time_);
+    sleep(5);
+    auto actor_list = world->GetActors();
+    for (size_t i = 0; i < truck_ids.size(); ++i) {
+        unsigned int actor_id = truck_ids[i];
+        unsigned int trail_id = trailer_ids[i];
+        auto actor = actor_list->Find(actor_id);
+        auto trail_actor = actor_list->Find(trail_id);
+        if (actor != nullptr) {
+            auto vehicle = boost::dynamic_pointer_cast<cc::Vehicle>(actor);
+            if (vehicle != nullptr) {
+                vehicle->Destroy();
+            }
+        }
+
+        if(trail_actor != nullptr) {
+            auto vehicle = boost::dynamic_pointer_cast<cc::Vehicle>(trail_actor);
+            if (vehicle != nullptr) {
+                vehicle->Destroy();
+            }
+        }
+    }
+    std::cerr << "pub shutdown" << std::endl;
 }           
 
 
@@ -239,8 +262,18 @@ void SyncManager::managerInThread()
     while(isNodeRunning_) {
         if(check_register()) {
             if(sync_received() && first) {
-                std::cerr << "tick" << std::endl;
+                std::cerr << "tick" << sim_time<<std::endl;
                 recordData();
+                if(sim_time - 100.0f > 0.0f) {
+                    isNodeRunning_ = false;
+                    settings.synchronous_mode = false;
+                    world->ApplySettings(settings,time_);
+                    sleep(2);
+                    std_msgs::msg::String msg;
+                    msg.data = "down";
+                    ShutdownPublisher_->publish(msg);
+                    rclcpp::shutdown();
+                }
                 world->Tick(time_);
                 sim_time += 0.01f;
             }
