@@ -52,7 +52,7 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
         lidar_bp_modifiable.SetAttribute("upper_fov", lidar_upper_fov);
         lidar_bp_modifiable.SetAttribute("lower_fov", lidar_lower_fov);
         lidar_bp_modifiable.SetAttribute("range", lidar_range);
-        lidar_bp_modifiable.SetAttribute("channels","1");
+        lidar_bp_modifiable.SetAttribute("channels","32");
     
         auto lidar_transform = cg::Transform{cg::Location{lidar_x, lidar_y, lidar_z}, cg::Rotation{lidar_pitch, lidar_yaw, lidar_roll}}; // pitch, yaw, roll.
         auto lidar_actor = world->SpawnActor(lidar_bp_modifiable, lidar_transform, actor.get());

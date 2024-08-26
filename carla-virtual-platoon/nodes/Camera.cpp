@@ -51,6 +51,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
         camera_bp_modifiable.SetAttribute("image_size_y", "480");
         camera_bp_modifiable.SetAttribute("fov", "90.0f");
         camera_bp_modifiable.SetAttribute("lens_flare_intensity", "0.0f");
+        camera_bp_modifiable.SetAttribute("lens_k", "0.0f");
 
         auto camera_transform = cg::Transform{cg::Location{rgbcam_x, rgbcam_y, rgbcam_z}, cg::Rotation{rgbcam_pitch, rgbcam_yaw, rgbcam_roll}};
         auto camera_actor = world->SpawnActor(camera_bp_modifiable, camera_transform, actor.get());
