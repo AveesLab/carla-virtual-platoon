@@ -10,7 +10,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
     this->get_parameter_or("add_sensor/camera_number", num_cameras_, 2);
     this->get_parameter_or("carla/sync", sync_ , false);
     this->get_parameter_or("carla/sync_with_delay", sync_with_delay, false);
-    
+    CurImagePublisher_ = this->create_publisher<sensor_msgs::msg::Image>("cur_image1",custom_qos);
     if(sync_with_delay) {
         GetDelayParameter();
         LaneImagePublisher = this->create_publisher<sensor_msgs::msg::Image>("lane_camera", custom_qos);
@@ -63,7 +63,7 @@ CameraPublisher::CameraPublisher(boost::shared_ptr<carla::client::Actor> actor)
         camera->Listen([this, i](auto data) {
             auto image = boost::static_pointer_cast<csd::Image>(data);
             assert(image != nullptr);
-
+            publishImage(*image, CurImagePublisher_);
             static int prev_tick_cnt = 0;
             //if(cnt == 0) std::cerr << "--------------" <<tick_cnt << "------------" << prev_tick_cnt << "------------" << std::endl;
             if(sync_with_delay) {

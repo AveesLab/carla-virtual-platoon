@@ -29,6 +29,7 @@ private:
     void publishImage(const csd::Image &carla_image, rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher);
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher;
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr LaneImagePublisher;
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr CurImagePublisher_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr WaitLanePublisher;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr WaitVelPublisher;
     std::vector<rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr> publishers_;

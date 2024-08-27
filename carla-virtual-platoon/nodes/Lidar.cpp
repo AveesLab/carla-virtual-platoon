@@ -61,6 +61,7 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
         lidar_sensors.push_back(lidar);
     
         lidar->Listen([this, i](auto data) {
+            std::unique_lock<std::mutex> lock(mutex_);
             auto lidar_data = boost::static_pointer_cast<carla::sensor::data::LidarMeasurement>(data);
             assert(lidar_data != nullptr);
 
@@ -68,23 +69,34 @@ LidarPublisher::LidarPublisher(boost::shared_ptr<carla::client::Actor> actor)
 
             if(sync_with_delay) {
 
-                if (!velocity_lidar_queue[i].empty() && (tick_cnt == 0 ? prev_tick_cnt - velocity_lidar_queue[i].front().timestamp == velocity_planner_delay : tick_cnt - velocity_lidar_queue[i].front().timestamp == velocity_planner_delay)) {
-                    auto lidar_data_ = velocity_lidar_queue[i].front().lidar;
-                    velocity_lidar_queue[i].pop();
-                    publishLidarData(lidar_data_, publishers_[i]);
+                if (!velocity_lidar_queue[i].empty()) {
+                    int time_diff = tick_cnt - velocity_lidar_queue[i].front().timestamp;
+                    if(time_diff <= 0) time_diff += lcm_period;
+
+                    if(time_diff == velocity_planner_delay) {
+                        auto lidar_data_ = velocity_lidar_queue[i].front().lidar;
+                        //std::cerr << i << "  pub radar"<< velocity_radar_queue[i].front().timestamp << " " << cnt << " " <<  std::endl;
+                        velocity_lidar_queue[i].pop();
+                        publishLidarData(lidar_data_, publishers_[i]);
+                    }
                 }
 
 
                 if(velocity_planner_period == 0 || tick_cnt % velocity_planner_period == 0) {
+                    //std::cerr << i <<"  save radar" << tick_cnt << std::endl;
                     velocity_lidar_queue[i].push(TimedLidar(lidar_data, tick_cnt));
                 }
-                if(i == num_lidars_-1) {
+
+                cnt++;
+                if(cnt == num_lidars_) {
+                    prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
                     tick_cnt += 10;
 
                     if(tick_cnt >= lcm_period) {
-                        prev_tick_cnt = tick_cnt; // Save the current tick count before resetting
                         tick_cnt = 0;
                     }
+
+                    cnt = 0;
                 }
             }
             else {

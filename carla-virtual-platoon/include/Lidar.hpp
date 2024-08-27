@@ -29,7 +29,7 @@ private:
     boost::shared_ptr<carla::client::Actor> lidar_actor;
     carla::geom::Transform lidar_transform;
     boost::shared_ptr<carla::client::ActorBlueprint> lidar_bp;
-
+    std::mutex mutex_;
     bool sync_ = false;
     bool sync_with_delay = false;
     void GetDelayParameter();
@@ -37,6 +37,7 @@ private:
     int lcm(int a, int b);
     int lcm_period;
     int tick_cnt = 0;
+    int cnt = 0;
     int velocity_planner_period = 30;
     int velocity_planner_delay = 100;
     std::vector<std::queue<TimedLidar>> velocity_lidar_queue;
