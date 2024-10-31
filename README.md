@@ -79,7 +79,7 @@ make launch
 ```
 git clone https://github.com/ysrhee6199/CarlaSemiTruckTrailer.git
 ```
-> 0. Replace **PythonAPI** & **Unreal** in carla directory
+> 0. Merge **PythonAPI** & **Unreal** in carla directory
 > 1. In ```Content/Carla/Blueprint/Vehicle```, open the ```VehicleFactory``` file.
 > 2. In the **Generate Definitions** tab, double click **Vehicles**.
 > 3. In the **Details panel**, expand the **Default Value** section and add a new element to the vehicles array.
