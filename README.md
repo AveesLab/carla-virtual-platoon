@@ -211,7 +211,11 @@ python3 manual_controlSemiTrailer.py
     ```
     source ~/ros2_ws/install/setup.bash
 
-    # Map = {k-track, Town04_Opt, IHP}
+    # Map = {k-track, Town04_Opt}
+    ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=Town04_Opt
+
+    or
+
     ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=k-track
     ```
 
