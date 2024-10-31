@@ -197,7 +197,7 @@ make launch
 
 > Run ros2 launch
 ```
-source ~/ros2_ws/instal/setup.bash
+source ~/ros2_ws/install/setup.bash
 ros2 launch carla-virtual-platoon carla-virtual-platoon.launch.py NumTrucks:=3 Map:=Town04_Opt
 
 or
