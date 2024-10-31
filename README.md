@@ -167,7 +167,7 @@ mkdir -p ~/ros2_ws/src
 > Install packages
 ```
 cd ~/ros2_ws/src
-git clone -b seame https://github.com/AveesLab/carla-virtual-platoon.git
+git clone https://github.com/AveesLab/carla-virtual-platoon.git
 ```
 > Set build dependency
 ```
