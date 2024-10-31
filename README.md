@@ -108,10 +108,13 @@ python manual_controlSemiTrailer.py
 ```
 make import
 ```
-> 3. After then,
+> 3. And then,
 ```
 make launch
 ```
+> 4. in **/Content/map_package/Maps**, there is the 'k-track' map
+> 5. Change materials of Element 1 & Element 2
+![image](https://github.com/user-attachments/assets/253b6ee1-14b5-4ad4-b3e1-cb37f8bfeca3)
 
 # 6. Install ROS 2 (Galactic)
 > Set locale
