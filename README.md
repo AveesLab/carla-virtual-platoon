@@ -172,7 +172,7 @@ git clone https://github.com/AveesLab/carla-virtual-platoon.git
 > Set build dependency
 ```
 cd ~/carla/PythonAPI/carla
-cp ./dependencies ~/ros2_ws/src/carla-virtual-platoon
+cp -r ./dependencies ~/ros2_ws/src/carla-virtual-platoon
 
 cd ~/ros2_ws/src/carla-virtual-platoon
 mv dependencies libcarla-install
