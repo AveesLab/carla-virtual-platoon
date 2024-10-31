@@ -27,6 +27,7 @@ pip3 install --user wheel auditwheel
 ```
 
 # 2. Install Unreal Engine 4.26
+> Sign up Unreal Engine git
 > Clone the content for CARLA's fork of Unreal Engine 4.26 to your local computer:
 ```
 git clone --depth 1 -b carla https://github.com/CarlaUnreal/UnrealEngine.git ~/UnrealEngine_4.26
