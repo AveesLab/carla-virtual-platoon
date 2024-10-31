@@ -53,7 +53,6 @@ sudo apt install --reinstall build-essential clang-8 lld-8 g++-7 cmake vim ninja
 cd
 git clone https://github.com/carla-simulator/carla
 cd ~/carla
-git checkout tags/0.9.15.2
 ```
 > Get assets
 ```
