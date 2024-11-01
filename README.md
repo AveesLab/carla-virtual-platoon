@@ -60,7 +60,6 @@ pip3 install --user wheel auditwheel
     cd
     git clone https://github.com/carla-simulator/carla
     cd ~/carla
-    git checkout tags/0.9.15.2
     ```
 - Get assets
     Refer [this issue](https://github.com/carla-simulator/carla/issues/7196#issuecomment-1976496048) in case of error in **CONTENT_LINK**
